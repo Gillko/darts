@@ -11,7 +11,7 @@ class Game extends Model
 	*
 	* @var array
 	*/
-	protected $fillable = ['name', 'date', 'hour'];
+	protected $fillable = ['name', 'date', 'hour', 'winner'];
 
 	protected $table ='games';
 
@@ -23,6 +23,12 @@ class Game extends Model
 
 	public function scores(){
         return $this->hasMany('App\Score');
+    }
+
+    //this is for the winner of the game
+    public function player()
+    {
+        return $this->hasOne('App\Player');
     }
 
 	/**

@@ -8,7 +8,7 @@
             <p>{{ $game->name }} - {{ $game->date }} - {{ $game->hour }}</p>
             <h4>Players for this game</h4>
             @foreach ($game->players as $player)
-                <p><a href="{{ URL::to('/players/show/' . $player->id) }}">{{ $player->firstname }} {{ $player->lastname }}</a></p>
+                <p><a href="{{ URL::to('/players/' . $player->id) }}">{{ $player->firstname }} {{ $player->lastname }}</a></p>
             @endforeach
         </div>
     </div>

@@ -40,6 +40,15 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="players">{{ __('Winner') }}</label>
+                    <select name="winner" id="players" class="form-control">
+                        @foreach($players as $player)
+                            <option value="{{ $player->id }}">{{ $player->firstname }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="form-group">
                     <button type="submit" class="btn btn-primary">
                         {{ __('Create Game') }}
                     </button>

@@ -29,6 +29,16 @@ class Player extends Model
         return $this->hasMany('App\Score');
     }
 
+    //the game the player has won
+    public function game()
+    {
+        return $this->belongsTo('App\Game');
+    }
+
+    public function won(){
+    	return $this->hasMany(Game::class, 'winner');
+	}
+
 	/**
 	*Get a list of groups ids associated with the current player.
 	*

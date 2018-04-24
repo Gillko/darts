@@ -7,6 +7,7 @@ use Redirect;
 use Session;
 use App\Player;
 use App\Group;
+use App\Game;
 
 class PlayersController extends Controller
 {
@@ -29,8 +30,12 @@ class PlayersController extends Controller
     {
         $players = Player::all();
 
+        //Get game count of every player
+        $players = Player::withCount('games')->get();
+
         /*Load the view and pass the groups*/
-        return \View::make('players.index')->with('players', $players);
+        //return \View::make('players.index')->with('players', $players);
+        return \View::make('players.index')->with('players', $players, Player::with('won')->get());
     }
 
     /**
@@ -76,7 +81,9 @@ class PlayersController extends Controller
      */
     public function show($id)
     {
-        //
+        $player = Player::find($id);
+
+        return \View::make('players.show')->with('player', $player);
     }
 
     /**

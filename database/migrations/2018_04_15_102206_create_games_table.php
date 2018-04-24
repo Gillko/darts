@@ -18,6 +18,8 @@ class CreateGamesTable extends Migration
             $table->string('name');
             $table->date('date');
             $table->time('hour');
+            $table->integer('winner')->unsigned()->index();
+            $table->foreign('winner')->references('id')->on('players')->onDelete('cascade');
             $table->timestamps();
         });
     }
