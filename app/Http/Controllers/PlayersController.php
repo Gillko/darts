@@ -18,7 +18,7 @@ class PlayersController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth', ['except' => ['store', 'destroy']]);
+        $this->middleware('auth', ['except' => ['store', 'destroy', 'index']]);
     }
     
     /**

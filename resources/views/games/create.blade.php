@@ -17,7 +17,7 @@
 
                 <div class="form-group">
                     <label for="name">{{ __('Name') }}</label>
-                    <input id="name" type="text" class="form-control" name="name">
+                    <input id="name" type="text" class="form-control" name="name" value="Adagio Game">
                 </div>
 
                 <div class="form-group">
@@ -32,7 +32,7 @@
 
                  <div class="form-group">
                     <label for="players">{{ __('Players') }}</label>
-                    <select name="player_list[]" id="players" class="form-control" multiple>
+                    <select name="player_list[]" id="players" class="form-control" multiple style="height:300px;">
                         @foreach($players as $player)
                             <option value="{{ $player->id }}">{{ $player->firstname }}</option>
                         @endforeach
