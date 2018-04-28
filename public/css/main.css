@@ -1,0 +1,11 @@
+@import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
+/* NAVIGATION */
+nav {
+  background-color: #2d77b8; }
+  nav a {
+    color: #fff; }
+  nav .nav-item-user-name {
+    color: #fff;
+    padding: 5px 10px 0 0; }
+
+/* NAVIGATION */

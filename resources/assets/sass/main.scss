@@ -1,0 +1,19 @@
+// Fonts
+@import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
+
+// Variables
+@import "variables";
+
+/* NAVIGATION */
+nav{
+	background-color: 	$main-color;
+
+	a{
+		color: 			$white;
+	}
+	.nav-item-user-name{
+		color: 			$white;
+		padding:		5px 10px 0 0;
+	}
+}
+/* NAVIGATION */

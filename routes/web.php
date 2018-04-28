@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('home');
 });
 
 Auth::routes();
@@ -23,5 +23,7 @@ Route::resource('groups', 'GroupsController');
 Route::resource('players', 'PlayersController');
 Route::resource('games', 'GamesController');
 Route::resource('scores', 'ScoreController');
+
+Route::resource('/leaderboard', 'PlayersController');
 /*Route::get('/groups', 'GroupsController@index')->name('groups');
 Route::get('/groups/create', 'GroupsController@create')->name('groups.create');*/

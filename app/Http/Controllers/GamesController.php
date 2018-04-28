@@ -27,7 +27,7 @@ class GamesController extends Controller
     public function index()
     {
         /*Get the groups*/
-        $games = Game::all();
+        $games = Game::orderBy('id', 'DESC')->get();
 
         /*Load the view and pass the groups*/
         return \View::make('games.index')->with('games', $games);
