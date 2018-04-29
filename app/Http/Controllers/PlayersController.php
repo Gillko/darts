@@ -31,6 +31,7 @@ class PlayersController extends Controller
         $players = Player::all();
 
         //Get game count of every player
+        //$players = Player::withCount('games')->orderBy('id', 'asc')->get();
         $players = Player::withCount('games')->get();
 
         /*Load the view and pass the groups*/

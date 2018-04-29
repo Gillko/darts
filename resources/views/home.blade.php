@@ -148,6 +148,11 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarText">
                 <ul class="navbar-nav mr-auto">
+                    @guest
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url('/leaderboard') }}">Leaderboard</a>
+                    </li>
+                    @else
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url('/groups') }}">Groups</a>
                     </li>
@@ -163,11 +168,12 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url('/leaderboard') }}">Leaderboard</a>
                     </li>
+                    @endguest
                 </ul>
                 <span>
                     @guest
                     <a href="{{ route('login') }}">
-                        <i class="fa fa-lock fa-2x" aria-hidden="true"></i>
+                        <i class="fa fa-lock fa-1x" aria-hidden="true"></i>
                     </a>
                     @else
                     <ul class="navbar-nav mr-auto">
@@ -176,7 +182,7 @@
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                <i class="fa fa-unlock fa-2x" aria-hidden="true"></i>
+                                <i class="fa fa-unlock fa-1x" aria-hidden="true"></i>
                             </a>
                         </li>
                     </ul>

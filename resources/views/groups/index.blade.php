@@ -4,12 +4,18 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <h2>Groups</h2>
-            <a href="{{ url('/groups/create') }}"><i class="fa fa-plus fa-3x" aria-hidden="true"></i></a>
+        	<h2 class="title-d">Groups</h2>
+            <a class="create-d" href="{{ url('/groups/create') }}">
+              <button class="btn btn-primary">
+                <i class="fa fa-plus fa-1x" aria-hidden="true"></i>
+              </button>
+            </a>
 
-            @foreach($groups as $group)
-                <p>{{ $group->name }}</p>
-            @endforeach
+            <div class="foreach-d">
+	            @foreach($groups as $group)
+	                <p>{{ $group->name }}</p>
+	            @endforeach
+	        </div>
         </div>
     </div>
 </div>

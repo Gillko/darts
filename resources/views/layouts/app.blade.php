@@ -10,17 +10,18 @@
 
 	<title>{{ config('app.name', 'Darts') }}</title>
 
-	<!-- Scripts -->
-	<script src="{{ asset('js/app.js') }}" defer></script>
-
 	<!-- Fonts -->
 	<link rel="dns-prefetch" href="https://fonts.gstatic.com">
 	<link href="https://fonts.googleapis.com/css?family=Raleway:300,400,600" rel="stylesheet" type="text/css">
+
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/css/bootstrap.min.css" />
+	<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"> -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
 
 	<!-- Styles -->
 	<link href="{{ asset('css/main.css') }}" rel="stylesheet">
+
+	@yield('header')
 </head>
 <body>
 	<nav class="navbar navbar-expand-lg">
@@ -32,26 +33,32 @@
 		</button>
 		<div class="collapse navbar-collapse" id="navbarText">
 			<ul class="navbar-nav mr-auto">
-				<li class="nav-item">
-					<a class="nav-link" href="{{ url('/groups') }}">Groups</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="{{ url('/players') }}">Players</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="{{ url('/games') }}">Games</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="{{ url('/scores') }}">Scores</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="{{ url('/leaderboard') }}">Leaderboard</a>
-				</li>
+				@guest
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url('/leaderboard') }}">Leaderboard</a>
+                </li>
+                @else
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url('/groups') }}">Groups</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url('/players') }}">Players</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url('/games') }}">Games</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url('/scores') }}">Scores</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url('/leaderboard') }}">Leaderboard</a>
+                </li>
+                @endguest
 			</ul>
 			<span>
 				@guest
 				<a href="{{ route('login') }}">
-					<i class="fa fa-lock fa-2x" aria-hidden="true"></i>
+					<i class="fa fa-lock fa-1x" aria-hidden="true"></i>
 				</a>
 				@else
 				<ul class="navbar-nav mr-auto">
@@ -60,7 +67,7 @@
 					</li>
 					<li class="nav-item">
 						<a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-							<i class="fa fa-unlock fa-2x" aria-hidden="true"></i>
+							<i class="fa fa-unlock fa-1x" aria-hidden="true"></i>
 						</a>
 					</li>
 				</ul>
@@ -72,13 +79,11 @@
 		</div>
 	</nav>
 	<div id="app">
-		<div class="container">
-
-		</div>
-
 		<main class="py-4">
 			@yield('content')
 		</main>
 	</div>
+
+	@yield('footer')
 </body>
 </html>

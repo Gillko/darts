@@ -6,14 +6,49 @@
 
 /* NAVIGATION */
 nav{
-	background-color: 	$main-color;
+		background-color: 	$main-color;
 
 	a{
-		color: 			$white;
+		color: 				$white;
 	}
 	.nav-item-user-name{
-		color: 			$white;
-		padding:		5px 10px 0 0;
+		color: 				$white;
+		padding:			0 10px 0 0;
 	}
 }
 /* NAVIGATION */
+
+h2{
+	&.title-d{
+		float: 				left;
+	}
+}
+
+a{
+	&.create-d{
+		float: 				right;
+	}
+}
+
+div{
+	&.foreach-d{
+		clear: 				both;
+	}
+}
+
+/* if you enable searching for data tables */
+#table-d_wrapper{
+		clear:				both;
+}
+
+th{
+		cursor: 			pointer;
+}
+
+.hidden{
+		display:			none;
+}
+
+.modal-dialog-d{
+		max-width: 			75%;
+}

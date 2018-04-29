@@ -2,12 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Input;
 use Illuminate\Http\Request;
 use App\Game;
 use App\Player;
+use Validator;
+use Response;
 
 class GamesController extends Controller
 {
+
+    /**
+    * @var array
+    */
+    protected $rules =
+    [
+        'name'      => 'required',
+        'date'      => 'required',
+        'hour'      => 'required',
+        'players'   => 'required',
+        'winner'    => 'required'
+    ];
 
     /**
      * Create a new controller instance.
@@ -29,8 +44,14 @@ class GamesController extends Controller
         /*Get the groups*/
         $games = Game::orderBy('id', 'DESC')->get();
 
+        $lastinsertid = Game::all()->last();
+
+        $players = Player::select('firstname', 'id')->get();
+
+        return \View::make('games.index', compact('games', 'players', 'lastinsertid'));
+
         /*Load the view and pass the groups*/
-        return \View::make('games.index')->with('games', $games);
+        //return \View::make('games.index')->with('games', $games);
     }
 
     /**
@@ -40,11 +61,11 @@ class GamesController extends Controller
      */
     public function create()
     {
-        $games = Game::all();
+        /*$games = Game::all();
 
         $players = Player::select('firstname', 'id')->get();
 
-        return \View::make('games.create', compact('games', 'players'));
+        return \View::make('games.create', compact('games', 'players'));*/
     }
 
     /**
@@ -55,7 +76,7 @@ class GamesController extends Controller
      */
     public function store(Request $request)
     {
-        $input = request()->validate([
+        /*$input = request()->validate([
             'name' => 'required',
             'date' => 'required',
             'hour' => 'required',
@@ -65,7 +86,26 @@ class GamesController extends Controller
 
         $game->players()->attach($request->input('player_list'));
 
-        return redirect('games/create')->with('success', 'The Game has been created!');
+        return redirect('games/create')->with('success', 'The Game has been created!');*/
+
+        $validator = Validator::make(Input::all(), $this->rules);
+        if ($validator->fails()) {
+            return Response::json(array('errors' => $validator->getMessageBag()->toArray()));
+        } else {
+            $game = new Game();
+            $game->name     = $request->name;
+            $game->date     = $request->date;
+            $game->hour     = $request->hour;
+            //$game->players  = $request->players;
+            //$game->players()->attach('players_list');
+
+           
+
+            $game->winner = $request->winner;
+            $game->save();
+            $game->players()->attach($request->players);
+            return response()->json($game);
+        }
     }
 
     /**
@@ -112,5 +152,21 @@ class GamesController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * Change resource status.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function changeStatus() 
+    {
+        $id = Input::get('id');
+
+        $game = Game::findOrFail($id);
+        //$post->is_published = !$post->is_published;
+        $game->save();
+
+        return response()->json($game);
     }
 }
