@@ -4,9 +4,12 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css" />
 
         <title>Darts</title>
+
+        <link rel="icon" type="image/png" href="{{ asset('img/favicon.png') }}">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css" />
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
@@ -19,6 +22,7 @@
         svg{
             display: block;
             margin: 0 auto;
+            padding: 20px 0 20px 0;
         }
         .red{
             color: #dc3545;
@@ -36,21 +40,22 @@
             color: #f5f5dc;
             fill: currentColor;
         }
-        .orange{
-            color: #ff7f00;
+        .color-combination{
+            color: #2d77b8;
             fill: currentColor;
         }
         .red:hover,
         .green:hover,
         .black:hover,
         .beige:hover,
-        .orange:hover,
+        .color-combination:hover,
         .black:hover{
             opacity: 0.5;
-            color: #dc3545;
+            color: #2d77b8;
         }
         .score-value{
             padding-top: 5px;
+            cursor: move;
         }
         .score-value:first-child{
             
@@ -86,7 +91,8 @@
         #data-toggle-button-adjust,
         #button-start,
         #button-add-another-player,
-        #data-toggle-show-log{
+        #data-toggle-show-log,
+        #button-resume-game{
             display: none;
         }
         .points-player{
@@ -111,12 +117,19 @@
         .player:active,
         .player:hover{
             opacity: 0.5;
-            background-color: #dc3545;
+            background-color: #2d77b8;
             color: #fff;
         }
         /*override bootstrap*/
+        select,
+        .form-control{
+            border-radius: 0px;
+        }
         .btn{
             border-radius: 0px;
+        }
+        .btn-primary{
+            background-color: #2d77b8;
         }
         .form-control-points{
             font-size: 35px;
@@ -194,10 +207,10 @@
             </div>
         </nav>
         <div class="container">
-            <h1>Dart Scoreboard</h1>
+            <h1>Darts Scoreboard</h1>
             <form id="form">
                 <div class="form-group">
-                    <h2 id="amount-players">Choose the game</h2>
+                    <h2 id="amount-players">Game</h2>
                     <label for="games">Game</label>
                     <select class="form-control" id="game">
                         <option>501</option>
@@ -208,21 +221,22 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <h2 id="amount-players">Choose the players</h2>
+                    <h2 id="amount-players">Players</h2>
                     <label for="players">Players</label>
                     <select multiple="multiple" class="form-control" id="players" size="10"></select>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <button type="submit" id="button-add-player" name="button" class="btn btn-block btn-success">Add player</button>
+                        <button type="submit" id="button-add-player" name="button" class="btn btn-block btn-primary">Add player</button>
                     </div>
                 </div>
             </form>
             <br>
             <div class="row" id="button-start">
                 <div class="col-md-12">
-                    <button type="submit" id="button-start-game" name="button" class="btn btn-block btn-danger">Start game</button>
-                    <button type="submit" id="button-add-another-player" name="button" class="btn btn-block btn-danger">Add another player</button>
+                    <button type="submit" id="button-start-game" name="button" class="btn btn-block btn-primary">Start game</button>
+                    <button type="submit" id="button-resume-game" name="button" class="btn btn-block btn-primary">Resume game</button>
+                    <button type="submit" id="button-add-another-player" name="button" class="btn btn-block btn-primary">Add another player</button>
                 </div>
             </div>
             <br>
@@ -232,7 +246,35 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div id="overall-points-board" class="col-md-12">
+                    <div id="overall-points-board">
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button type="button" class="btn btn-primary btn-point button-adjust" id="button-adjust">
+                                    <span class="fa fa-undo fa-1x"></span>
+                                </button>
+                                <button type="button" class="btn btn-primary btn-point" id="button-log">
+                                    <span class="fa fa-list fa-1x"></span>
+                                </button>
+                                 <button type="button" class="btn btn-primary btn-point" id="button-delete-active-player">
+                                    <span class="fa fa-minus fa-1x"></span>
+                                </button>
+                                <button type="button" class="btn btn-primary btn-point" id="next-player">
+                                    <span class="fa fa-arrow-down fa-1x"></span>
+                                </button>
+                                <button type="button" class="btn btn-primary btn-point" id="stop-game">
+                                    <span class="fa fa-remove fa-1x"></span>
+                                </button>
+                                <button type="button" class="btn btn-primary btn-point" id="rematch">
+                                    <span class="fa fa-gamepad fa-1x"></span>
+                                </button>
+                                <!-- <button type="button" class="btn btn-danger btn-point button-adjust" id="button-adjust">Undo</button> -->
+                                <!-- <button type="button" class="btn btn-warning btn-point" id="button-log">Show Log</button> -->
+                                <!-- <button type="button" class="btn btn-primary btn-point" id="button-delete-active-player">Delete Active Player</button> -->
+                                <!-- <button type="button" class="btn btn-success btn-point" id="next-player">Next Player</button> -->
+                                <!-- <button type="button" class="btn btn-danger btn-point" id="stop-game">Stop Game</button> -->
+                                <!-- <button type="button" class="btn btn-danger btn-point" id="rematch">Rematch</button> -->
+                            </div>
+                        </div>
                         <svg id="svg" version="1.0" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1181.000000 1181.000000" preserveAspectRatio="xMidYMid meet"> 
                             <g transform="translate(0.000000,1181.000000) scale(0.100000,-0.100000)" fill="#000000" stroke="none">
                                 <!--single 0--> 
@@ -651,16 +693,6 @@
                                 </path>
                             </g>
                         </svg>
-                        <br>
-                        <div class="row">
-                            <div class="col-md-12 text-center">
-                                <button type="button" class="btn btn-danger btn-point button-adjust" id="button-adjust">Undo</button>
-                                <button type="button" class="btn btn-warning btn-point" id="button-log">Show Log</button>
-                                <button type="button" class="btn btn-primary btn-point" id="button-delete-active-player">Delete Active Player</button>
-                                <button type="button" class="btn btn-success btn-point" id="next-player">Next Player</button>
-                                <button type="button" class="btn btn-danger btn-point" id="stop-game">Stop Game</button>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -676,7 +708,7 @@
                             <p>You don't have points yet.</p>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                         </div>
                     </div>
                 </div>
@@ -686,14 +718,14 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title">You can't show the log!</h4>
+                            <h4 class="modal-title">You don't have any points yet!</h4>
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
                         <div class="modal-body">
                             <p>You need to throw an arrow first.</p>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                         </div>
                     </div>
                 </div>
@@ -706,7 +738,9 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/js/bootstrap.min.js"></script>
         <script type="text/javascript">
             $( function() {
-                $( "#scoreboard" ).sortable();
+                $( "#scoreboard" ).sortable({
+                    cancel: null 
+                });
                 $( "#scoreboard" ).disableSelection();
             });
 
@@ -749,7 +783,9 @@
                     'Gilko'     ,
                     'Paul'      ,
                     'Vanessa'   ,
-                    'Carl'
+                    'Carl'      ,
+                    'Peter'     ,
+                    'Kaat'
                 ]
             ;
 
@@ -785,7 +821,7 @@
                 console.log( getSelectValues( players ) );
                 players.remove( players.selectedIndex );
 
-                //Prevent deletion of newly added player
+                //---Prevent deletion of newly added player
                 return false;
             }
 
@@ -793,7 +829,9 @@
             var form                                    = document.getElementById( 'form' );
             var amountPlayers                           = document.getElementById( 'amount-players' );
             var buttonStartGame                         = document.getElementById( 'button-start-game' );
+            var buttonResumeGame                        = document.getElementById( 'button-resume-game' );
             var buttonAddAnotherPlayer                  = document.getElementById( 'button-add-another-player' );
+            var rematch                                 = document.getElementById('rematch');
 
             //---Start the game
             document.getElementById( 'button-start-game' ).onclick = function() {
@@ -801,27 +839,50 @@
                 form.style.display                      = 'none';
                 amountPlayers.style.display             = 'none';
                 buttonStartGame.style.display           = 'none';
+                buttonResumeGame.style.display          = 'none';
                 buttonAddAnotherPlayer.style.display    = 'block';
 
+                var gameType;
+
+                gameType = document.getElementById('score-value').value;
+                localStorage.setItem('gameType', gameType);
+
                 var scoreboard; 
-                var formTest;
 
                 scoreboard = document.getElementById('scoreboard').innerHTML;
-                localStorage.setItem('scoreboard',scoreboard);
+                localStorage.setItem('scoreboard', scoreboard);
 
                 return false;
             }
 
-            var currentColor = localStorage.getItem('scoreboard');
+            //---Resume the game after adding new player
+            document.getElementById( 'button-resume-game' ).onclick = function() {
 
-            document.getElementById('scoreboard').innerHTML = currentColor;
+                form.style.display                      = 'none';
+                amountPlayers.style.display             = 'none';
+                buttonStartGame.style.display           = 'none';
+                buttonResumeGame.style.display          = 'none';
+                buttonAddAnotherPlayer.style.display    = 'block';
+
+                var scoreboard; 
+
+                scoreboard = document.getElementById('scoreboard').innerHTML;
+                localStorage.setItem('scoreboard', scoreboard);
+
+                return false;
+            }
+
+            //---When refreshing page the DOM isn't deleted because we stored it in localstorage
+            var currentScoreboard = localStorage.getItem('scoreboard');
+            document.getElementById('scoreboard').innerHTML = currentScoreboard;
 
             //---Add another player
             document.getElementById( 'button-add-another-player' ).onclick = function() {
 
                 form.style.display                      = 'block';
                 amountPlayers.style.display             = 'none';
-                buttonStartGame.style.display           = 'block';
+                buttonStartGame.style.display           = 'none';
+                buttonResumeGame.style.display          = 'block';
                 buttonAddAnotherPlayer.style.display    = 'none';
 
                 return false;
@@ -850,8 +911,8 @@
                         scoreboard.id = 'player';
                         scoreboard.innerHTML = 
                             '<div class="row points-player hide" id="points-player">' 
-                                + '<div class="col-md-6 col-6" id="points-name"></div>' 
-                                    + '<div class="col-md-6 col-6" id="points-minus-log"></div></div>' 
+                                + '<div class="col-md-6 col-6 points-name" id="points-name"></div>' 
+                                    + '<div class="col-md-6 col-6 points-minus-log" id="points-minus-log"></div></div>' 
                                         + '<div class="board">' 
                                             + '<div class="row">' 
                                                 + '<div class="col-md-6 col-sm-6 col-6">' 
@@ -973,12 +1034,12 @@
                                         showhide.classList.remove('hide');
                                         showhide.classList.add('show');
 
-                                        buttonLog.innerHTML = "Hide Log";
+                                        //buttonLog.innerHTML = "Hide Log";
                                     } else{
                                         showhide.classList.remove('show');
                                         showhide.classList.add('hide');
 
-                                        buttonLog.innerHTML = "Show Log";
+                                        //buttonLog.innerHTML = "Show Log";
                                     }
                                 } else {
                                     var dataToggleShowLog = document.getElementById('data-toggle-show-log');
@@ -1010,210 +1071,210 @@
 
                                     document.getElementById('score-value').setAttribute("value", newScore);
 
-                                    document.getElementById(scoreTripple20Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble20Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle20Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle20Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple20Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble20Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle20Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle20Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple19Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble19Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle19Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle19Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple19Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble19Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle19Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle19Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple18Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble18Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle18Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle18Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple18Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble18Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle18Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle18Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple17Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble17Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle17Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle17Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple17Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble17Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle17Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle17Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple16Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble16Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle16Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle16Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple16Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble16Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle16Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle16Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple15Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble15Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle15Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle15Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple15Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble15Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle15Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle15Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple14Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble14Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle14Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle14Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple14Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble14Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle14Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle14Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple13Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble13Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle13Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle13Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple13Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble13Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle13Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle13Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple12Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble12Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle12Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle12Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple12Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble12Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle12Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle12Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple11Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble11Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle11Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle11Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple11Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble11Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle11Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle11Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple10Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble10Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle10Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle10Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple10Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble10Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle10Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle10Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple9Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble9Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle9Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle9Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple9Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble9Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle9Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle9Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple8Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble8Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle8Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle8Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple8Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble8Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle8Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle8Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple7Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble7Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle7Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle7Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple7Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble7Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle7Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle7Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple6Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble6Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle6Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle6Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple6Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble6Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle6Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle6Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple5Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble5Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle5Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle5Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple5Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble5Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle5Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle5Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple4Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble4Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle4Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle4Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple4Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble4Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle4Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle4Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple3Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble3Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle3Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle3Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple3Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble3Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle3Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle3Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple2Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble2Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle2Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle2Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple2Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble2Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle2Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle2Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple1Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble1Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle1Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle1Name).classList.remove("orange");
-                                    document.getElementById(scoreBull25Name).classList.remove("orange");
-                                    document.getElementById(scoreBullsEye50Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple1Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble1Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle1Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle1Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBull25Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBullsEye50Name).classList.remove("color-combination");
 
                                     if(document.getElementById('score-value').value > 170){
-                                        document.getElementById(scoreTripple20Name).classList.remove("orange");
-                                        document.getElementById(scoreDouble20Name).classList.remove("orange");
-                                        document.getElementById(scoreTopSingle20Name).classList.remove("orange");
-                                        document.getElementById(scoreBottomSingle20Name).classList.remove("orange");
+                                        document.getElementById(scoreTripple20Name).classList.remove("color-combination");
+                                        document.getElementById(scoreDouble20Name).classList.remove("color-combination");
+                                        document.getElementById(scoreTopSingle20Name).classList.remove("color-combination");
+                                        document.getElementById(scoreBottomSingle20Name).classList.remove("color-combination");
 
-                                        document.getElementById(scoreTripple19Name).classList.remove("orange");
-                                        document.getElementById(scoreDouble19Name).classList.remove("orange");
-                                        document.getElementById(scoreTopSingle19Name).classList.remove("orange");
-                                        document.getElementById(scoreBottomSingle19Name).classList.remove("orange");
+                                        document.getElementById(scoreTripple19Name).classList.remove("color-combination");
+                                        document.getElementById(scoreDouble19Name).classList.remove("color-combination");
+                                        document.getElementById(scoreTopSingle19Name).classList.remove("color-combination");
+                                        document.getElementById(scoreBottomSingle19Name).classList.remove("color-combination");
 
-                                        document.getElementById(scoreTripple18Name).classList.remove("orange");
-                                        document.getElementById(scoreDouble18Name).classList.remove("orange");
-                                        document.getElementById(scoreTopSingle18Name).classList.remove("orange");
-                                        document.getElementById(scoreBottomSingle18Name).classList.remove("orange");
+                                        document.getElementById(scoreTripple18Name).classList.remove("color-combination");
+                                        document.getElementById(scoreDouble18Name).classList.remove("color-combination");
+                                        document.getElementById(scoreTopSingle18Name).classList.remove("color-combination");
+                                        document.getElementById(scoreBottomSingle18Name).classList.remove("color-combination");
 
-                                        document.getElementById(scoreTripple17Name).classList.remove("orange");
-                                        document.getElementById(scoreDouble17Name).classList.remove("orange");
-                                        document.getElementById(scoreTopSingle17Name).classList.remove("orange");
-                                        document.getElementById(scoreBottomSingle17Name).classList.remove("orange");
+                                        document.getElementById(scoreTripple17Name).classList.remove("color-combination");
+                                        document.getElementById(scoreDouble17Name).classList.remove("color-combination");
+                                        document.getElementById(scoreTopSingle17Name).classList.remove("color-combination");
+                                        document.getElementById(scoreBottomSingle17Name).classList.remove("color-combination");
 
-                                        document.getElementById(scoreTripple16Name).classList.remove("orange");
-                                        document.getElementById(scoreDouble16Name).classList.remove("orange");
-                                        document.getElementById(scoreTopSingle16Name).classList.remove("orange");
-                                        document.getElementById(scoreBottomSingle16Name).classList.remove("orange");
+                                        document.getElementById(scoreTripple16Name).classList.remove("color-combination");
+                                        document.getElementById(scoreDouble16Name).classList.remove("color-combination");
+                                        document.getElementById(scoreTopSingle16Name).classList.remove("color-combination");
+                                        document.getElementById(scoreBottomSingle16Name).classList.remove("color-combination");
 
-                                        document.getElementById(scoreTripple15Name).classList.remove("orange");
-                                        document.getElementById(scoreDouble15Name).classList.remove("orange");
-                                        document.getElementById(scoreTopSingle15Name).classList.remove("orange");
-                                        document.getElementById(scoreBottomSingle15Name).classList.remove("orange");
+                                        document.getElementById(scoreTripple15Name).classList.remove("color-combination");
+                                        document.getElementById(scoreDouble15Name).classList.remove("color-combination");
+                                        document.getElementById(scoreTopSingle15Name).classList.remove("color-combination");
+                                        document.getElementById(scoreBottomSingle15Name).classList.remove("color-combination");
 
-                                        document.getElementById(scoreTripple14Name).classList.remove("orange");
-                                        document.getElementById(scoreDouble14Name).classList.remove("orange");
-                                        document.getElementById(scoreTopSingle14Name).classList.remove("orange");
-                                        document.getElementById(scoreBottomSingle14Name).classList.remove("orange");
+                                        document.getElementById(scoreTripple14Name).classList.remove("color-combination");
+                                        document.getElementById(scoreDouble14Name).classList.remove("color-combination");
+                                        document.getElementById(scoreTopSingle14Name).classList.remove("color-combination");
+                                        document.getElementById(scoreBottomSingle14Name).classList.remove("color-combination");
 
-                                        document.getElementById(scoreTripple13Name).classList.remove("orange");
-                                        document.getElementById(scoreDouble13Name).classList.remove("orange");
-                                        document.getElementById(scoreTopSingle13Name).classList.remove("orange");
-                                        document.getElementById(scoreBottomSingle13Name).classList.remove("orange");
+                                        document.getElementById(scoreTripple13Name).classList.remove("color-combination");
+                                        document.getElementById(scoreDouble13Name).classList.remove("color-combination");
+                                        document.getElementById(scoreTopSingle13Name).classList.remove("color-combination");
+                                        document.getElementById(scoreBottomSingle13Name).classList.remove("color-combination");
 
-                                        document.getElementById(scoreTripple12Name).classList.remove("orange");
-                                        document.getElementById(scoreDouble12Name).classList.remove("orange");
-                                        document.getElementById(scoreTopSingle12Name).classList.remove("orange");
-                                        document.getElementById(scoreBottomSingle12Name).classList.remove("orange");
+                                        document.getElementById(scoreTripple12Name).classList.remove("color-combination");
+                                        document.getElementById(scoreDouble12Name).classList.remove("color-combination");
+                                        document.getElementById(scoreTopSingle12Name).classList.remove("color-combination");
+                                        document.getElementById(scoreBottomSingle12Name).classList.remove("color-combination");
 
-                                        document.getElementById(scoreTripple11Name).classList.remove("orange");
-                                        document.getElementById(scoreDouble11Name).classList.remove("orange");
-                                        document.getElementById(scoreTopSingle11Name).classList.remove("orange");
-                                        document.getElementById(scoreBottomSingle11Name).classList.remove("orange");
+                                        document.getElementById(scoreTripple11Name).classList.remove("color-combination");
+                                        document.getElementById(scoreDouble11Name).classList.remove("color-combination");
+                                        document.getElementById(scoreTopSingle11Name).classList.remove("color-combination");
+                                        document.getElementById(scoreBottomSingle11Name).classList.remove("color-combination");
 
-                                        document.getElementById(scoreTripple10Name).classList.remove("orange");
-                                        document.getElementById(scoreDouble10Name).classList.remove("orange");
-                                        document.getElementById(scoreTopSingle10Name).classList.remove("orange");
-                                        document.getElementById(scoreBottomSingle10Name).classList.remove("orange");
+                                        document.getElementById(scoreTripple10Name).classList.remove("color-combination");
+                                        document.getElementById(scoreDouble10Name).classList.remove("color-combination");
+                                        document.getElementById(scoreTopSingle10Name).classList.remove("color-combination");
+                                        document.getElementById(scoreBottomSingle10Name).classList.remove("color-combination");
 
-                                        document.getElementById(scoreTripple9Name).classList.remove("orange");
-                                        document.getElementById(scoreDouble9Name).classList.remove("orange");
-                                        document.getElementById(scoreTopSingle9Name).classList.remove("orange");
-                                        document.getElementById(scoreBottomSingle9Name).classList.remove("orange");
+                                        document.getElementById(scoreTripple9Name).classList.remove("color-combination");
+                                        document.getElementById(scoreDouble9Name).classList.remove("color-combination");
+                                        document.getElementById(scoreTopSingle9Name).classList.remove("color-combination");
+                                        document.getElementById(scoreBottomSingle9Name).classList.remove("color-combination");
 
-                                        document.getElementById(scoreTripple8Name).classList.remove("orange");
-                                        document.getElementById(scoreDouble8Name).classList.remove("orange");
-                                        document.getElementById(scoreTopSingle8Name).classList.remove("orange");
-                                        document.getElementById(scoreBottomSingle8Name).classList.remove("orange");
+                                        document.getElementById(scoreTripple8Name).classList.remove("color-combination");
+                                        document.getElementById(scoreDouble8Name).classList.remove("color-combination");
+                                        document.getElementById(scoreTopSingle8Name).classList.remove("color-combination");
+                                        document.getElementById(scoreBottomSingle8Name).classList.remove("color-combination");
 
-                                        document.getElementById(scoreTripple7Name).classList.remove("orange");
-                                        document.getElementById(scoreDouble7Name).classList.remove("orange");
-                                        document.getElementById(scoreTopSingle7Name).classList.remove("orange");
-                                        document.getElementById(scoreBottomSingle7Name).classList.remove("orange");
+                                        document.getElementById(scoreTripple7Name).classList.remove("color-combination");
+                                        document.getElementById(scoreDouble7Name).classList.remove("color-combination");
+                                        document.getElementById(scoreTopSingle7Name).classList.remove("color-combination");
+                                        document.getElementById(scoreBottomSingle7Name).classList.remove("color-combination");
 
-                                        document.getElementById(scoreTripple6Name).classList.remove("orange");
-                                        document.getElementById(scoreDouble6Name).classList.remove("orange");
-                                        document.getElementById(scoreTopSingle6Name).classList.remove("orange");
-                                        document.getElementById(scoreBottomSingle6Name).classList.remove("orange");
+                                        document.getElementById(scoreTripple6Name).classList.remove("color-combination");
+                                        document.getElementById(scoreDouble6Name).classList.remove("color-combination");
+                                        document.getElementById(scoreTopSingle6Name).classList.remove("color-combination");
+                                        document.getElementById(scoreBottomSingle6Name).classList.remove("color-combination");
 
-                                        document.getElementById(scoreTripple5Name).classList.remove("orange");
-                                        document.getElementById(scoreDouble5Name).classList.remove("orange");
-                                        document.getElementById(scoreTopSingle5Name).classList.remove("orange");
-                                        document.getElementById(scoreBottomSingle5Name).classList.remove("orange");
+                                        document.getElementById(scoreTripple5Name).classList.remove("color-combination");
+                                        document.getElementById(scoreDouble5Name).classList.remove("color-combination");
+                                        document.getElementById(scoreTopSingle5Name).classList.remove("color-combination");
+                                        document.getElementById(scoreBottomSingle5Name).classList.remove("color-combination");
 
-                                        document.getElementById(scoreTripple4Name).classList.remove("orange");
-                                        document.getElementById(scoreDouble4Name).classList.remove("orange");
-                                        document.getElementById(scoreTopSingle4Name).classList.remove("orange");
-                                        document.getElementById(scoreBottomSingle4Name).classList.remove("orange");
+                                        document.getElementById(scoreTripple4Name).classList.remove("color-combination");
+                                        document.getElementById(scoreDouble4Name).classList.remove("color-combination");
+                                        document.getElementById(scoreTopSingle4Name).classList.remove("color-combination");
+                                        document.getElementById(scoreBottomSingle4Name).classList.remove("color-combination");
 
-                                        document.getElementById(scoreTripple3Name).classList.remove("orange");
-                                        document.getElementById(scoreDouble3Name).classList.remove("orange");
-                                        document.getElementById(scoreTopSingle3Name).classList.remove("orange");
-                                        document.getElementById(scoreBottomSingle3Name).classList.remove("orange");
+                                        document.getElementById(scoreTripple3Name).classList.remove("color-combination");
+                                        document.getElementById(scoreDouble3Name).classList.remove("color-combination");
+                                        document.getElementById(scoreTopSingle3Name).classList.remove("color-combination");
+                                        document.getElementById(scoreBottomSingle3Name).classList.remove("color-combination");
 
-                                        document.getElementById(scoreTripple2Name).classList.remove("orange");
-                                        document.getElementById(scoreDouble2Name).classList.remove("orange");
-                                        document.getElementById(scoreTopSingle2Name).classList.remove("orange");
-                                        document.getElementById(scoreBottomSingle2Name).classList.remove("orange");
+                                        document.getElementById(scoreTripple2Name).classList.remove("color-combination");
+                                        document.getElementById(scoreDouble2Name).classList.remove("color-combination");
+                                        document.getElementById(scoreTopSingle2Name).classList.remove("color-combination");
+                                        document.getElementById(scoreBottomSingle2Name).classList.remove("color-combination");
 
-                                        document.getElementById(scoreTripple1Name).classList.remove("orange");
-                                        document.getElementById(scoreDouble1Name).classList.remove("orange");
-                                        document.getElementById(scoreTopSingle1Name).classList.remove("orange");
-                                        document.getElementById(scoreBottomSingle1Name).classList.remove("orange");
-                                        document.getElementById(scoreBull25Name).classList.remove("orange");
-                                        document.getElementById(scoreBullsEye50Name).classList.remove("orange");
+                                        document.getElementById(scoreTripple1Name).classList.remove("color-combination");
+                                        document.getElementById(scoreDouble1Name).classList.remove("color-combination");
+                                        document.getElementById(scoreTopSingle1Name).classList.remove("color-combination");
+                                        document.getElementById(scoreBottomSingle1Name).classList.remove("color-combination");
+                                        document.getElementById(scoreBull25Name).classList.remove("color-combination");
+                                        document.getElementById(scoreBullsEye50Name).classList.remove("color-combination");
                                     }
                                     
                                     if(document.getElementById('score-value').value <= 170){
@@ -1225,1261 +1286,1261 @@
 
                                             combinationToParagraph.innerHTML = 'T20 T20 Bull';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreBullsEye50Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreBullsEye50Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 169){
 
-                                            combinationToParagraph.innerHTML = '--- No out shot---';
+                                            combinationToParagraph.innerHTML = '--- No out shot ---';
 
                                         } else if(document.getElementById('score-value').value == 168){
 
-                                            combinationToParagraph.innerHTML = '--- No out shot---';
+                                            combinationToParagraph.innerHTML = '--- No out shot ---';
 
                                         } else if(document.getElementById('score-value').value == 167){
 
                                             combinationToParagraph.innerHTML = 'T20 T19 Bull';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreBullsEye50Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreBullsEye50Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 166){
 
-                                            combinationToParagraph.innerHTML = '--- No out shot---';
+                                            combinationToParagraph.innerHTML = '--- No out shot ---';
 
                                         }  else if(document.getElementById('score-value').value == 165){
 
-                                            combinationToParagraph.innerHTML = '--- No out shot---';
+                                            combinationToParagraph.innerHTML = '--- No out shot ---';
 
                                         }  else if(document.getElementById('score-value').value == 164){
 
                                             combinationToParagraph.innerHTML = 'T20 T18 Bull';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple18Name).classList.add("orange");
-                                            document.getElementById(scoreBullsEye50Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple18Name).classList.add("color-combination");
+                                            document.getElementById(scoreBullsEye50Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 163){
 
-                                            combinationToParagraph.innerHTML = '--- No out shot---';
+                                            combinationToParagraph.innerHTML = '--- No out shot ---';
 
                                         }  else if(document.getElementById('score-value').value == 162){
 
-                                            combinationToParagraph.innerHTML = '--- No out shot---';
+                                            combinationToParagraph.innerHTML = '--- No out shot ---';
 
                                         }  else if(document.getElementById('score-value').value == 161){
 
                                             combinationToParagraph.innerHTML = 'T20 T17 Bull';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple17Name).classList.add("orange");
-                                            document.getElementById(scoreBullsEye50Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple17Name).classList.add("color-combination");
+                                            document.getElementById(scoreBullsEye50Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 160){
 
                                             combinationToParagraph.innerHTML = 'T20 T20 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 159){
 
-                                            combinationToParagraph.innerHTML = '--- No out shot---';
+                                            combinationToParagraph.innerHTML = '--- No out shot ---';
 
                                         }  else if(document.getElementById('score-value').value == 158){
 
                                             combinationToParagraph.innerHTML = 'T20 T20 D19';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble19Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble19Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 157){
 
                                             combinationToParagraph.innerHTML = 'T20 T19 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 156){
 
                                             combinationToParagraph.innerHTML = 'T20 T20 D18';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble18Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble18Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 155){
 
                                             combinationToParagraph.innerHTML = 'T20 T19 D19';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreDouble19Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble19Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 154){
 
                                             combinationToParagraph.innerHTML = 'T20 T18 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple18Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple18Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 153){
 
                                             combinationToParagraph.innerHTML = 'T20 T19 D18';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreDouble18Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble18Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 152){
 
                                             combinationToParagraph.innerHTML = 'T20 T20 D16';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 151){
 
                                             combinationToParagraph.innerHTML = 'T20 T17 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple17Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple17Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 150){
 
                                             combinationToParagraph.innerHTML = 'T20 T18 D18';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple18Name).classList.add("orange");
-                                            document.getElementById(scoreDouble18Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple18Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble18Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 149){
 
                                             combinationToParagraph.innerHTML = 'T20 T19 D16';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 148){
 
                                             combinationToParagraph.innerHTML = 'T20 T16 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple16Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple16Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 147){
 
                                             combinationToParagraph.innerHTML = 'T20 T17 D18';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple17Name).classList.add("orange");
-                                            document.getElementById(scoreDouble18Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple17Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble18Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 146){
 
                                             combinationToParagraph.innerHTML = 'T20 T18 D16';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple18Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple18Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 145){
 
                                             combinationToParagraph.innerHTML = 'T20 T15 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple15Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple15Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 144){
 
                                             combinationToParagraph.innerHTML = 'T20 T20 D12';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble12Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble12Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 143){
 
                                             combinationToParagraph.innerHTML = 'T20 T17 D16';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple17Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple17Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 142){
 
                                             combinationToParagraph.innerHTML = 'T20 T14 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple14Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple14Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 141){
 
                                             combinationToParagraph.innerHTML = 'T20 T19 D12';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreDouble12Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble12Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 140){
 
                                             combinationToParagraph.innerHTML = 'T20 T16 D16';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple16Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple16Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 139){
 
                                             combinationToParagraph.innerHTML = 'T19 T14 D20';
 
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreTripple14Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple14Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 138){
 
                                             combinationToParagraph.innerHTML = 'T20 T18 D12';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple18Name).classList.add("orange");
-                                            document.getElementById(scoreDouble12Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple18Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble12Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 137){
 
                                             combinationToParagraph.innerHTML = 'T19 T16 D16';
 
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreTripple16Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple16Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 136){
 
                                             combinationToParagraph.innerHTML = 'T20 T20 D8';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble8Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble8Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 135){
 
                                             combinationToParagraph.innerHTML = 'T20 T17 D12';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple17Name).classList.add("orange");
-                                            document.getElementById(scoreDouble12Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple17Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble12Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 134){
 
                                             combinationToParagraph.innerHTML = 'T20 T14 D16';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple14Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple14Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
 
                                         } else if(document.getElementById('score-value').value == 133){
 
                                             combinationToParagraph.innerHTML = 'T20 T19 D8';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreDouble8Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble8Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 132){
 
                                             combinationToParagraph.innerHTML = 'T20 T16 D12';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple16Name).classList.add("orange");
-                                            document.getElementById(scoreDouble12Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple16Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble12Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 131){
 
                                             combinationToParagraph.innerHTML = 'T20 T13 D16';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple13Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple13Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 130){
 
                                             combinationToParagraph.innerHTML = 'T20 20 Bull';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle20Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle20Name).classList.add("orange");
-                                            document.getElementById(scoreBullsEye50Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle20Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle20Name).classList.add("color-combination");
+                                            document.getElementById(scoreBullsEye50Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 129){
 
                                             combinationToParagraph.innerHTML = 'T19 T16 D12';
 
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreTripple16Name).classList.add("orange");
-                                            document.getElementById(scoreDouble12Name).classList.add("orange");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple16Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble12Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 128){
 
                                             combinationToParagraph.innerHTML = 'T18 T14 D16';
 
-                                            document.getElementById(scoreTripple18Name).classList.add("orange");
-                                            document.getElementById(scoreTripple14Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple18Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple14Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 127){
 
                                             combinationToParagraph.innerHTML = 'T20 T17 D8';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple17Name).classList.add("orange");
-                                            document.getElementById(scoreDouble8Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple17Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble8Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 126){
 
                                             combinationToParagraph.innerHTML = 'T19 T19 D6';
 
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreDouble6Name).classList.add("orange");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble6Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 125){
 
                                             combinationToParagraph.innerHTML = 'T20 25 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreBull25Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreBull25Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 124){
 
                                             combinationToParagraph.innerHTML = 'T20 T16 D8';
 
-                                            document.getElementById(scoreTripple17Name).classList.add("orange");
-                                            document.getElementById(scoreTripple10Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple17Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple10Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 123){
 
                                             combinationToParagraph.innerHTML = 'T19 T16 D9 ';
 
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreTripple16Name).classList.add("orange");
-                                            document.getElementById(scoreDouble9Name).classList.add("orange");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple16Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble9Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 122){
 
                                             combinationToParagraph.innerHTML = 'T20 T18 D4';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple18Name).classList.add("orange");
-                                            document.getElementById(scoreDouble4Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple18Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble4Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 121){
 
                                             combinationToParagraph.innerHTML = 'T17 T10 D20';
 
-                                            document.getElementById(scoreTripple17Name).classList.add("orange");
-                                            document.getElementById(scoreTripple10Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple17Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple10Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 120){
 
                                             combinationToParagraph.innerHTML = 'T20 20 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle20Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle20Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 119){
 
                                             combinationToParagraph.innerHTML = 'T19 T10 D16';
 
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreTripple10Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple10Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 118){
 
                                             combinationToParagraph.innerHTML = 'T20 18 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle18Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle18Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle18Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle18Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 117){
 
                                             combinationToParagraph.innerHTML = 'T20 17 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle17Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle17Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle17Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle17Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 116){
 
                                             combinationToParagraph.innerHTML = 'T20 16 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle16Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle16Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle16Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle16Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 115){
 
                                             combinationToParagraph.innerHTML = 'T20 15 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle15Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle15Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle15Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle15Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 114){
 
                                             combinationToParagraph.innerHTML = 'T20 14 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle14Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle14Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle14Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle14Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 113){
 
                                             combinationToParagraph.innerHTML = 'T20 13 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle13Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle13Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle13Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle13Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 112){
 
                                             combinationToParagraph.innerHTML = 'T20 12 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle12Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle12Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle12Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle12Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 111){
 
                                             combinationToParagraph.innerHTML = 'T20 19 D16';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle19Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle19Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle19Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle19Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 110){
 
                                             combinationToParagraph.innerHTML = 'T20 18 D16';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle18Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle18Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle18Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle18Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 109){
 
                                             combinationToParagraph.innerHTML = 'T19 20 D16';
 
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle20Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle20Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 108){
 
                                             combinationToParagraph.innerHTML = 'T20 16 D16';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle16Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle16Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle16Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle16Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 107){
 
                                             combinationToParagraph.innerHTML = 'T19 18 D16';
 
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle18Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle18Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle18Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle18Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 106){
 
                                             combinationToParagraph.innerHTML = 'T20 14 D16';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle14Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle14Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle14Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle14Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 105){
 
                                             combinationToParagraph.innerHTML = 'T19 16 D16';
 
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle16Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle16Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle16Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle16Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 104){
 
                                             combinationToParagraph.innerHTML = 'T18 18 D16';
 
-                                            document.getElementById(scoreTripple18Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle18Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle18Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple18Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle18Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle18Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 103){
 
                                             combinationToParagraph.innerHTML = 'T20 3 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle3Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle3Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle3Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle3Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 102){
 
                                             combinationToParagraph.innerHTML = 'T20 10 D16';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle10Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle10Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle10Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle10Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 101){
 
                                             combinationToParagraph.innerHTML = 'T20 1 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 100){
 
                                             combinationToParagraph.innerHTML = 'T20 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 99){
 
                                             combinationToParagraph.innerHTML = 'T19 10 D16';
 
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle10Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle10Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle10Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle10Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 98){
 
                                             combinationToParagraph.innerHTML = 'T20 D19';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble19Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble19Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 97){
 
                                             combinationToParagraph.innerHTML = 'T19 D20';
 
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 96){
 
                                             combinationToParagraph.innerHTML = 'T20 D18';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble18Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble18Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 95){
 
                                             combinationToParagraph.innerHTML = 'T19 D19';
 
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreDouble19Name).classList.add("orange");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble19Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 94){
 
                                             combinationToParagraph.innerHTML = 'T18 D20';
 
-                                            document.getElementById(scoreTripple18Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple18Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 93){
 
                                             combinationToParagraph.innerHTML = 'T19 D18';
 
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreDouble18Name).classList.add("orange");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble18Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 92){
 
                                             combinationToParagraph.innerHTML = 'T20 D16';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 91){
 
                                             combinationToParagraph.innerHTML = 'T17 D20';
 
-                                            document.getElementById(scoreTripple17Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple17Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 90){
 
                                             combinationToParagraph.innerHTML = 'T20 D15';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble15Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble15Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 89){
 
                                             combinationToParagraph.innerHTML = 'T19 D16';
 
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 88){
 
                                             combinationToParagraph.innerHTML = 'T16 D20';
 
-                                            document.getElementById(scoreTripple16Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple16Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 87){
 
                                             combinationToParagraph.innerHTML = 'T17 D18';
 
-                                            document.getElementById(scoreTripple17Name).classList.add("orange");
-                                            document.getElementById(scoreDouble18Name).classList.add("orange");
+                                            document.getElementById(scoreTripple17Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble18Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 86){
 
                                             combinationToParagraph.innerHTML = 'T18 D16';
 
-                                            document.getElementById(scoreTripple18Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple18Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 85){
 
                                             combinationToParagraph.innerHTML = 'T15 D20';
 
-                                            document.getElementById(scoreTripple15Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple15Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 84){
 
                                             combinationToParagraph.innerHTML = 'T20 D12';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble12Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble12Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 83){
 
                                             combinationToParagraph.innerHTML = 'T17 D16';
 
-                                            document.getElementById(scoreTripple17Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple17Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 82){
 
                                             combinationToParagraph.innerHTML = 'T14 D20';
 
-                                            document.getElementById(scoreTripple14Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple14Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 81){
 
                                             combinationToParagraph.innerHTML = 'T19 D12';
 
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreDouble12Name).classList.add("orange");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble12Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 80){
 
                                             combinationToParagraph.innerHTML = 'T20 D10';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble10Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble10Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 79){
 
                                             combinationToParagraph.innerHTML = 'T13 D20';
 
-                                            document.getElementById(scoreTripple13Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple13Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 78){
 
                                             combinationToParagraph.innerHTML = 'T18 D12';
 
-                                            document.getElementById(scoreTripple18Name).classList.add("orange");
-                                            document.getElementById(scoreDouble12Name).classList.add("orange");
+                                            document.getElementById(scoreTripple18Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble12Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 77){
 
                                             combinationToParagraph.innerHTML = 'T19 D10';
 
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreDouble10Name).classList.add("orange");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble10Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 76){
 
                                             combinationToParagraph.innerHTML = 'T20 D8';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble8Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble8Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 75){
 
                                             combinationToParagraph.innerHTML = 'T17 D12';
 
-                                            document.getElementById(scoreTripple17Name).classList.add("orange");
-                                            document.getElementById(scoreDouble12Name).classList.add("orange");
+                                            document.getElementById(scoreTripple17Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble12Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 74){
 
                                             combinationToParagraph.innerHTML = 'T14 D16';
 
-                                            document.getElementById(scoreTripple14Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple14Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 73){
 
                                             combinationToParagraph.innerHTML = 'T19 D8';
 
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreDouble8Name).classList.add("orange");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble8Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 72){
 
                                             combinationToParagraph.innerHTML = 'T16 D12';
 
-                                            document.getElementById(scoreTripple16Name).classList.add("orange");
-                                            document.getElementById(scoreDouble12Name).classList.add("orange");
+                                            document.getElementById(scoreTripple16Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble12Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 71){
 
                                             combinationToParagraph.innerHTML = 'T13 D16';
 
-                                            document.getElementById(scoreTripple13Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple13Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 70){
 
                                             combinationToParagraph.innerHTML = 'T10 D20';
 
-                                            document.getElementById(scoreTripple10Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple10Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 69){
 
                                             combinationToParagraph.innerHTML = 'T15 D12';
 
-                                            document.getElementById(scoreTripple15Name).classList.add("orange");
-                                            document.getElementById(scoreDouble12Name).classList.add("orange");
+                                            document.getElementById(scoreTripple15Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble12Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 68){
 
                                             combinationToParagraph.innerHTML = 'T20 D4';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble4Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble4Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 67){
 
                                             combinationToParagraph.innerHTML = 'T17 D8';
 
-                                            document.getElementById(scoreTripple17Name).classList.add("orange");
-                                            document.getElementById(scoreDouble8Name).classList.add("orange");
+                                            document.getElementById(scoreTripple17Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble8Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 66){
 
                                             combinationToParagraph.innerHTML = 'T10 D18';
 
-                                            document.getElementById(scoreTripple10Name).classList.add("orange");
-                                            document.getElementById(scoreDouble18Name).classList.add("orange");
+                                            document.getElementById(scoreTripple10Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble18Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 65){
 
                                             combinationToParagraph.innerHTML = 'T19 D4';
 
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreDouble4Name).classList.add("orange");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble4Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 64){
 
                                             combinationToParagraph.innerHTML = 'T16 D8';
 
-                                            document.getElementById(scoreTripple16Name).classList.add("orange");
-                                            document.getElementById(scoreDouble8Name).classList.add("orange");
+                                            document.getElementById(scoreTripple16Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble8Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 63){
 
                                             combinationToParagraph.innerHTML = 'T13 D12';
 
-                                            document.getElementById(scoreTripple13Name).classList.add("orange");
-                                            document.getElementById(scoreDouble12Name).classList.add("orange");
+                                            document.getElementById(scoreTripple13Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble12Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 62){
 
                                             combinationToParagraph.innerHTML = 'T10 D16';
 
-                                            document.getElementById(scoreTripple10Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple10Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 61){
 
                                             combinationToParagraph.innerHTML = 'T15 D8';
 
-                                            document.getElementById(scoreTripple15Name).classList.add("orange");
-                                            document.getElementById(scoreDouble8Name).classList.add("orange");
+                                            document.getElementById(scoreTripple15Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble8Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 60){
 
                                             combinationToParagraph.innerHTML = '20 D20';
 
-                                            document.getElementById(scoreTopSingle20Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle20Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 59){
 
                                             combinationToParagraph.innerHTML = '19 D20';
 
-                                            document.getElementById(scoreTopSingle19Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle19Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle19Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle19Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 58){
 
                                             combinationToParagraph.innerHTML = '18 D20';
 
-                                            document.getElementById(scoreTopSingle18Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle18Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle18Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle18Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 57){
 
                                             combinationToParagraph.innerHTML = '17 D20';
 
-                                            document.getElementById(scoreTopSingle17Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle17Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle17Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle17Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 56){
 
                                             combinationToParagraph.innerHTML = '16 D20';
 
-                                            document.getElementById(scoreTopSingle16Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle16Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle16Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle16Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 55){
 
                                             combinationToParagraph.innerHTML = '15 D20';
 
-                                            document.getElementById(scoreTopSingle15Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle15Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle15Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle15Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 54){
 
                                             combinationToParagraph.innerHTML = '14 D20';
 
-                                            document.getElementById(scoreTopSingle14Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle14Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle14Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle14Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 53){
 
                                             combinationToParagraph.innerHTML = '13 D20';
 
-                                            document.getElementById(scoreTopSingle13Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle13Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle13Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle13Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 52){
 
                                             combinationToParagraph.innerHTML = '20 D16';
 
-                                            document.getElementById(scoreTopSingle20Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle20Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 51){
 
                                             combinationToParagraph.innerHTML = '19 D16';
 
-                                            document.getElementById(scoreTopSingle19Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle19Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle19Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle19Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 50){
 
                                             combinationToParagraph.innerHTML = '18 D16';
 
-                                            document.getElementById(scoreTopSingle18Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle18Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle18Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle18Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 49){
 
                                             combinationToParagraph.innerHTML = '17 D16';
 
-                                            document.getElementById(scoreTopSingle17Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle17Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle17Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle17Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 48){
 
                                             combinationToParagraph.innerHTML = '16 D16';
 
-                                            document.getElementById(scoreTopSingle16Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle16Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle16Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle16Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 47){
 
                                             combinationToParagraph.innerHTML = '15 D16';
 
-                                            document.getElementById(scoreTopSingle15Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle15Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle15Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle15Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 46){
 
                                             combinationToParagraph.innerHTML = '14 D16';
 
-                                            document.getElementById(scoreTopSingle14Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle14Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle14Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle14Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 45){
 
                                             combinationToParagraph.innerHTML = '13 D16';
 
-                                            document.getElementById(scoreTopSingle13Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle13Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle13Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle13Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 44){
 
                                             combinationToParagraph.innerHTML = '12 D16';
 
-                                            document.getElementById(scoreTopSingle12Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle12Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle12Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle12Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 43){
 
                                             combinationToParagraph.innerHTML = '11 D16';
 
-                                            document.getElementById(scoreTopSingle11Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle11Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle11Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle11Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 42){
 
                                             combinationToParagraph.innerHTML = '10 D16';
 
-                                            document.getElementById(scoreTopSingle10Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle10Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle10Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle10Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 41){
 
                                             combinationToParagraph.innerHTML = '9 D16';
 
-                                            document.getElementById(scoreTopSingle9Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle9Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle9Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle9Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 40){
 
                                             combinationToParagraph.innerHTML = 'D20';
 
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 39){
 
                                             combinationToParagraph.innerHTML = '7 D16';
 
-                                            document.getElementById(scoreTopSingle7Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle7Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle7Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle7Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 38){
 
                                             combinationToParagraph.innerHTML = 'D19';
 
-                                            document.getElementById(scoreDouble19Name).classList.add("orange");
+                                            document.getElementById(scoreDouble19Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 37){
 
                                             combinationToParagraph.innerHTML = '5 D16';
 
-                                            document.getElementById(scoreTopSingle5Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle5Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle5Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle5Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 36){
 
                                             combinationToParagraph.innerHTML = 'D18';
 
-                                            document.getElementById(scoreDouble18Name).classList.add("orange");
+                                            document.getElementById(scoreDouble18Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 35){
 
                                             combinationToParagraph.innerHTML = '3 D16';
 
-                                            document.getElementById(scoreTopSingle3Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle3Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle3Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle3Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 34){
 
                                             combinationToParagraph.innerHTML = 'D17';
 
-                                            document.getElementById(scoreDouble17Name).classList.add("orange");
+                                            document.getElementById(scoreDouble17Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 33){
 
                                             combinationToParagraph.innerHTML = '1 D16';
 
-                                            document.getElementById(scoreTopSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 32){
 
                                             combinationToParagraph.innerHTML = 'D16';
 
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 31){
 
                                             combinationToParagraph.innerHTML = '3 D14';
 
-                                            document.getElementById(scoreTopSingle3Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle3Name).classList.add("orange");
-                                            document.getElementById(scoreDouble14Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle3Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle3Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble14Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 30){
 
                                             combinationToParagraph.innerHTML = 'D15';
 
-                                            document.getElementById(scoreDouble15Name).classList.add("orange");
+                                            document.getElementById(scoreDouble15Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 29){
 
                                             combinationToParagraph.innerHTML = '1 D14';
 
-                                            document.getElementById(scoreTopSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreDouble14Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble14Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 28){
 
                                             combinationToParagraph.innerHTML = 'D14';
 
-                                            document.getElementById(scoreDouble14Name).classList.add("orange");
+                                            document.getElementById(scoreDouble14Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 27){
 
                                             combinationToParagraph.innerHTML = '3 D12';
 
-                                            document.getElementById(scoreTopSingle3Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle3Name).classList.add("orange");
-                                            document.getElementById(scoreDouble12Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle3Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle3Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble12Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 26){
 
                                             combinationToParagraph.innerHTML = 'D13';
 
-                                            document.getElementById(scoreDouble13Name).classList.add("orange");
+                                            document.getElementById(scoreDouble13Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 25){
                                             
                                             combinationToParagraph.innerHTML = '1 D12';
 
-                                            document.getElementById(scoreTopSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreDouble12Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble12Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 24){
 
                                             combinationToParagraph.innerHTML = 'D12';
 
-                                            document.getElementById(scoreDouble12Name).classList.add("orange");
+                                            document.getElementById(scoreDouble12Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 23){
 
                                             combinationToParagraph.innerHTML = '3 D10';
 
-                                            document.getElementById(scoreTopSingle3Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle3Name).classList.add("orange");
-                                            document.getElementById(scoreDouble10Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle3Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle3Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble10Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 22){
 
                                             combinationToParagraph.innerHTML = 'D11';
 
-                                            document.getElementById(scoreDouble11Name).classList.add("orange");
+                                            document.getElementById(scoreDouble11Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 21){
 
                                             combinationToParagraph.innerHTML = '1 D10';
 
-                                            document.getElementById(scoreTopSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreDouble10Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble10Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 20){
 
                                             combinationToParagraph.innerHTML = 'D10';
 
-                                            document.getElementById(scoreDouble10Name).classList.add("orange");
+                                            document.getElementById(scoreDouble10Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 19){
 
                                             combinationToParagraph.innerHTML = '3 D8';
 
-                                            document.getElementById(scoreTopSingle3Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle3Name).classList.add("orange");
-                                            document.getElementById(scoreDouble8Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle3Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle3Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble8Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 18){
 
                                             combinationToParagraph.innerHTML = 'D9';
 
-                                            document.getElementById(scoreDouble9Name).classList.add("orange");
+                                            document.getElementById(scoreDouble9Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 17){
 
                                             combinationToParagraph.innerHTML = '1 D8';
 
-                                            document.getElementById(scoreTopSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreDouble8Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble8Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 16){
 
                                             combinationToParagraph.innerHTML = 'D8';
 
-                                            document.getElementById(scoreDouble8Name).classList.add("orange");
+                                            document.getElementById(scoreDouble8Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 15){
 
                                             combinationToParagraph.innerHTML = '3 D6';
 
-                                            document.getElementById(scoreTopSingle3Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle3Name).classList.add("orange");
-                                            document.getElementById(scoreDouble6Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle3Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle3Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble6Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 14){
 
                                             combinationToParagraph.innerHTML = 'D7';
 
-                                            document.getElementById(scoreDouble7Name).classList.add("orange");
+                                            document.getElementById(scoreDouble7Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 13){
 
                                             combinationToParagraph.innerHTML = '1 D6';
 
-                                            document.getElementById(scoreTopSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreDouble6Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble6Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 12){
 
                                             combinationToParagraph.innerHTML = 'D6';
 
-                                            document.getElementById(scoreDouble6Name).classList.add("orange");
+                                            document.getElementById(scoreDouble6Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 11){
 
                                             combinationToParagraph.innerHTML = '3 D4';
 
-                                            document.getElementById(scoreTopSingle3Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle3Name).classList.add("orange");
-                                            document.getElementById(scoreDouble4Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle3Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle3Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble4Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 10){
 
                                             combinationToParagraph.innerHTML = 'D5';
 
-                                            document.getElementById(scoreDouble5Name).classList.add("orange");
+                                            document.getElementById(scoreDouble5Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 9){
 
                                             combinationToParagraph.innerHTML = '1 D4';
 
-                                            document.getElementById(scoreTopSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreDouble4Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble4Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 8){
 
                                             combinationToParagraph.innerHTML = 'D4';
 
-                                            document.getElementById(scoreDouble4Name).classList.add("orange");
+                                            document.getElementById(scoreDouble4Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 7){
 
                                             combinationToParagraph.innerHTML = '3 D2';
 
-                                            document.getElementById(scoreTopSingle3Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle3Name).classList.add("orange");
-                                            document.getElementById(scoreDouble2Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle3Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle3Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble2Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 6){
 
                                             combinationToParagraph.innerHTML = 'D3';
 
-                                            document.getElementById(scoreDouble3Name).classList.add("orange");
+                                            document.getElementById(scoreDouble3Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 5){
 
                                             combinationToParagraph.innerHTML = '1 D2';
 
-                                            document.getElementById(scoreTopSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreDouble2Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble2Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 4){
 
                                             combinationToParagraph.innerHTML = 'D2';
 
-                                            document.getElementById(scoreDouble2Name).classList.add("orange");
+                                            document.getElementById(scoreDouble2Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 3){
 
                                             combinationToParagraph.innerHTML = '1 D1';
 
-                                            document.getElementById(scoreTopSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreDouble1Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble1Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 2){
 
                                             combinationToParagraph.innerHTML = 'D1';
 
-                                            document.getElementById(scoreDouble1Name).classList.add("orange");
+                                            document.getElementById(scoreDouble1Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 0){
 
@@ -2534,6 +2595,40 @@
                             console.log('clicked ' + count + ' times');
                         }
 
+                        document.getElementById( 'rematch' ).onclick = function(){
+
+                            count = 0;
+                            
+                            var rematchGameType = localStorage.getItem('gameType');
+                            var scoreboard; 
+
+                            tests = document.getElementsByClassName('points-name');
+                            testsSecond = document.getElementsByClassName('points-minus-log');
+                            testsThird = document.getElementsByClassName('combination');
+                            testsFourth = document.getElementsByClassName('score-value');
+
+                            [].slice.call( tests ).forEach(function ( div ) {
+                                div.innerHTML = tests.innerHTML = "";
+                            });
+
+                            [].slice.call( testsSecond ).forEach(function ( div ) {
+                                div.innerHTML = testsSecond.innerHTML = "";
+                            });
+
+                            [].slice.call( testsThird ).forEach(function ( div ) {
+                                div.innerHTML = testsThird.innerHTML = "";
+                            });
+
+                            [].slice.call( testsFourth ).forEach(function ( input ) {
+                                input.value = testsFourth.value = rematchGameType;
+
+                                input.setAttribute('value', rematchGameType);
+                            });
+
+                            scoreboard = document.getElementById('scoreboard').innerHTML;
+                            localStorage.setItem('scoreboard', scoreboard);
+                        }
+
                         var buttonAdjust = document.getElementById('button-adjust');
 
                         if (buttonAdjust === null){
@@ -2558,7 +2653,7 @@
                                     var pointsToInput = document.createElement('input');
                                     pointsToInput.innerHTML = previousPointsInner;
                                     pointsToInput.value = previousPointsInner;
-                                    pointsToInput.className = 'form-control form-control-points';
+                                    pointsToInput.className = 'form-control form-control-points score-value';
                                     pointsToInput.id = 'score-value';
                                     pointsToInput.setAttribute("value", previousPointsInner);
                                     pointsToInput.setAttribute("disabled", "disabled");
@@ -2573,107 +2668,107 @@
 
                                     document.getElementById('combination').innerHTML = '';
 
-                                    document.getElementById(scoreTripple20Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble20Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle20Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle20Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple20Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble20Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle20Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle20Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple19Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble19Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle19Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle19Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple19Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble19Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle19Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle19Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple18Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble18Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle18Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle18Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple18Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble18Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle18Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle18Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple17Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble17Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle17Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle17Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple17Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble17Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle17Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle17Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple16Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble16Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle16Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle16Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple16Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble16Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle16Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle16Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple15Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble15Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle15Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle15Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple15Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble15Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle15Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle15Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple14Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble14Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle14Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle14Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple14Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble14Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle14Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle14Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple13Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble13Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle13Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle13Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple13Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble13Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle13Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle13Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple12Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble12Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle12Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle12Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple12Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble12Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle12Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle12Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple11Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble11Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle11Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle11Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple11Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble11Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle11Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle11Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple10Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble10Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle10Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle10Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple10Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble10Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle10Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle10Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple9Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble9Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle9Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle9Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple9Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble9Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle9Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle9Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple8Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble8Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle8Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle8Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple8Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble8Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle8Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle8Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple7Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble7Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle7Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle7Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple7Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble7Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle7Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle7Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple6Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble6Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle6Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle6Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple6Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble6Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle6Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle6Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple5Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble5Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle5Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle5Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple5Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble5Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle5Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle5Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple4Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble4Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle4Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle4Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple4Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble4Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle4Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle4Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple3Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble3Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle3Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle3Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple3Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble3Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle3Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle3Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple2Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble2Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle2Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle2Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple2Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble2Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle2Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle2Name).classList.remove("color-combination");
 
-                                    document.getElementById(scoreTripple1Name).classList.remove("orange");
-                                    document.getElementById(scoreDouble1Name).classList.remove("orange");
-                                    document.getElementById(scoreTopSingle1Name).classList.remove("orange");
-                                    document.getElementById(scoreBottomSingle1Name).classList.remove("orange");
-                                    document.getElementById(scoreBull25Name).classList.remove("orange");
-                                    document.getElementById(scoreBullsEye50Name).classList.remove("orange");
+                                    document.getElementById(scoreTripple1Name).classList.remove("color-combination");
+                                    document.getElementById(scoreDouble1Name).classList.remove("color-combination");
+                                    document.getElementById(scoreTopSingle1Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBottomSingle1Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBull25Name).classList.remove("color-combination");
+                                    document.getElementById(scoreBullsEye50Name).classList.remove("color-combination");
 
                                     if(document.getElementById('score-value').value <= 170){
                                         
@@ -2685,1261 +2780,1261 @@
 
                                             combinationToParagraph.innerHTML = 'T20 T20 Bull';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreBullsEye50Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreBullsEye50Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 169){
 
-                                            combinationToParagraph.innerHTML = '--- No out shot---';
+                                            combinationToParagraph.innerHTML = '--- No out shot ---';
 
                                         } else if(document.getElementById('score-value').value == 168){
 
-                                            combinationToParagraph.innerHTML = '--- No out shot---';
+                                            combinationToParagraph.innerHTML = '--- No out shot ---';
 
                                         } else if(document.getElementById('score-value').value == 167){
 
                                             combinationToParagraph.innerHTML = 'T20 T19 Bull';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreBullsEye50Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreBullsEye50Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 166){
 
-                                            combinationToParagraph.innerHTML = '--- No out shot---';
+                                            combinationToParagraph.innerHTML = '--- No out shot ---';
 
                                         }  else if(document.getElementById('score-value').value == 165){
 
-                                            combinationToParagraph.innerHTML = '--- No out shot---';
+                                            combinationToParagraph.innerHTML = '--- No out shot ---';
 
                                         }  else if(document.getElementById('score-value').value == 164){
 
                                             combinationToParagraph.innerHTML = 'T20 T18 Bull';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple18Name).classList.add("orange");
-                                            document.getElementById(scoreBullsEye50Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple18Name).classList.add("color-combination");
+                                            document.getElementById(scoreBullsEye50Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 163){
 
-                                            combinationToParagraph.innerHTML = '--- No out shot---';
+                                            combinationToParagraph.innerHTML = '--- No out shot ---';
 
                                         }  else if(document.getElementById('score-value').value == 162){
 
-                                            combinationToParagraph.innerHTML = '--- No out shot---';
+                                            combinationToParagraph.innerHTML = '--- No out shot ---';
 
                                         }  else if(document.getElementById('score-value').value == 161){
 
                                             combinationToParagraph.innerHTML = 'T20 T17 Bull';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple17Name).classList.add("orange");
-                                            document.getElementById(scoreBullsEye50Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple17Name).classList.add("color-combination");
+                                            document.getElementById(scoreBullsEye50Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 160){
 
                                             combinationToParagraph.innerHTML = 'T20 T20 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 159){
 
-                                            combinationToParagraph.innerHTML = '--- No out shot---';
+                                            combinationToParagraph.innerHTML = '--- No out shot ---';
 
                                         }  else if(document.getElementById('score-value').value == 158){
 
                                             combinationToParagraph.innerHTML = 'T20 T20 D19';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble19Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble19Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 157){
 
                                             combinationToParagraph.innerHTML = 'T20 T19 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 156){
 
                                             combinationToParagraph.innerHTML = 'T20 T20 D18';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble18Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble18Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 155){
 
                                             combinationToParagraph.innerHTML = 'T20 T19 D19';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreDouble19Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble19Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 154){
 
                                             combinationToParagraph.innerHTML = 'T20 T18 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple18Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple18Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 153){
 
                                             combinationToParagraph.innerHTML = 'T20 T19 D18';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreDouble18Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble18Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 152){
 
                                             combinationToParagraph.innerHTML = 'T20 T20 D16';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 151){
 
                                             combinationToParagraph.innerHTML = 'T20 T17 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple17Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple17Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 150){
 
                                             combinationToParagraph.innerHTML = 'T20 T18 D18';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple18Name).classList.add("orange");
-                                            document.getElementById(scoreDouble18Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple18Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble18Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 149){
 
                                             combinationToParagraph.innerHTML = 'T20 T19 D16';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 148){
 
                                             combinationToParagraph.innerHTML = 'T20 T16 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple16Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple16Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 147){
 
                                             combinationToParagraph.innerHTML = 'T20 T17 D18';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple17Name).classList.add("orange");
-                                            document.getElementById(scoreDouble18Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple17Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble18Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 146){
 
                                             combinationToParagraph.innerHTML = 'T20 T18 D16';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple18Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple18Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 145){
 
                                             combinationToParagraph.innerHTML = 'T20 T15 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple15Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple15Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 144){
 
                                             combinationToParagraph.innerHTML = 'T20 T20 D12';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble12Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble12Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 143){
 
                                             combinationToParagraph.innerHTML = 'T20 T17 D16';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple17Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple17Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 142){
 
                                             combinationToParagraph.innerHTML = 'T20 T14 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple14Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple14Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 141){
 
                                             combinationToParagraph.innerHTML = 'T20 T19 D12';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreDouble12Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble12Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 140){
 
                                             combinationToParagraph.innerHTML = 'T20 T16 D16';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple16Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple16Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         }  else if(document.getElementById('score-value').value == 139){
 
                                             combinationToParagraph.innerHTML = 'T19 T14 D20';
 
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreTripple14Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple14Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 138){
 
                                             combinationToParagraph.innerHTML = 'T20 T18 D12';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple18Name).classList.add("orange");
-                                            document.getElementById(scoreDouble12Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple18Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble12Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 137){
 
                                             combinationToParagraph.innerHTML = 'T19 T16 D16';
 
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreTripple16Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple16Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 136){
 
                                             combinationToParagraph.innerHTML = 'T20 T20 D8';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble8Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble8Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 135){
 
                                             combinationToParagraph.innerHTML = 'T20 T17 D12';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple17Name).classList.add("orange");
-                                            document.getElementById(scoreDouble12Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple17Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble12Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 134){
 
                                             combinationToParagraph.innerHTML = 'T20 T14 D16';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple14Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple14Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
 
                                         } else if(document.getElementById('score-value').value == 133){
 
                                             combinationToParagraph.innerHTML = 'T20 T19 D8';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreDouble8Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble8Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 132){
 
                                             combinationToParagraph.innerHTML = 'T20 T16 D12';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple16Name).classList.add("orange");
-                                            document.getElementById(scoreDouble12Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple16Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble12Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 131){
 
                                             combinationToParagraph.innerHTML = 'T20 T13 D16';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple13Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple13Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 130){
 
                                             combinationToParagraph.innerHTML = 'T20 20 Bull';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle20Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle20Name).classList.add("orange");
-                                            document.getElementById(scoreBullsEye50Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle20Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle20Name).classList.add("color-combination");
+                                            document.getElementById(scoreBullsEye50Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 129){
 
                                             combinationToParagraph.innerHTML = 'T19 T16 D12';
 
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreTripple16Name).classList.add("orange");
-                                            document.getElementById(scoreDouble12Name).classList.add("orange");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple16Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble12Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 128){
 
                                             combinationToParagraph.innerHTML = 'T18 T14 D16';
 
-                                            document.getElementById(scoreTripple18Name).classList.add("orange");
-                                            document.getElementById(scoreTripple14Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple18Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple14Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 127){
 
                                             combinationToParagraph.innerHTML = 'T20 T17 D8';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple17Name).classList.add("orange");
-                                            document.getElementById(scoreDouble8Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple17Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble8Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 126){
 
                                             combinationToParagraph.innerHTML = 'T19 T19 D6';
 
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreDouble6Name).classList.add("orange");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble6Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 125){
 
                                             combinationToParagraph.innerHTML = 'T20 25 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreBull25Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreBull25Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 124){
 
                                             combinationToParagraph.innerHTML = 'T20 T16 D8';
 
-                                            document.getElementById(scoreTripple17Name).classList.add("orange");
-                                            document.getElementById(scoreTripple10Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple17Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple10Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 123){
 
                                             combinationToParagraph.innerHTML = 'T19 T16 D9 ';
 
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreTripple16Name).classList.add("orange");
-                                            document.getElementById(scoreDouble9Name).classList.add("orange");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple16Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble9Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 122){
 
                                             combinationToParagraph.innerHTML = 'T20 T18 D4';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTripple18Name).classList.add("orange");
-                                            document.getElementById(scoreDouble4Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple18Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble4Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 121){
 
                                             combinationToParagraph.innerHTML = 'T17 T10 D20';
 
-                                            document.getElementById(scoreTripple17Name).classList.add("orange");
-                                            document.getElementById(scoreTripple10Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple17Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple10Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 120){
 
                                             combinationToParagraph.innerHTML = 'T20 20 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle20Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle20Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 119){
 
                                             combinationToParagraph.innerHTML = 'T19 T10 D16';
 
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreTripple10Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreTripple10Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 118){
 
                                             combinationToParagraph.innerHTML = 'T20 18 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle18Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle18Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle18Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle18Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 117){
 
                                             combinationToParagraph.innerHTML = 'T20 17 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle17Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle17Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle17Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle17Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 116){
 
                                             combinationToParagraph.innerHTML = 'T20 16 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle16Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle16Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle16Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle16Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 115){
 
                                             combinationToParagraph.innerHTML = 'T20 15 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle15Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle15Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle15Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle15Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 114){
 
                                             combinationToParagraph.innerHTML = 'T20 14 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle14Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle14Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle14Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle14Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 113){
 
                                             combinationToParagraph.innerHTML = 'T20 13 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle13Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle13Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle13Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle13Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 112){
 
                                             combinationToParagraph.innerHTML = 'T20 12 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle12Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle12Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle12Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle12Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 111){
 
                                             combinationToParagraph.innerHTML = 'T20 19 D16';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle19Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle19Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle19Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle19Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 110){
 
                                             combinationToParagraph.innerHTML = 'T20 18 D16';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle18Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle18Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle18Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle18Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 109){
 
                                             combinationToParagraph.innerHTML = 'T19 20 D16';
 
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle20Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle20Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 108){
 
                                             combinationToParagraph.innerHTML = 'T20 16 D16';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle16Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle16Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle16Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle16Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 107){
 
                                             combinationToParagraph.innerHTML = 'T19 18 D16';
 
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle18Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle18Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle18Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle18Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 106){
 
                                             combinationToParagraph.innerHTML = 'T20 14 D16';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle14Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle14Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle14Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle14Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 105){
 
                                             combinationToParagraph.innerHTML = 'T19 16 D16';
 
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle16Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle16Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle16Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle16Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 104){
 
                                             combinationToParagraph.innerHTML = 'T18 18 D16';
 
-                                            document.getElementById(scoreTripple18Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle18Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle18Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple18Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle18Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle18Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 103){
 
                                             combinationToParagraph.innerHTML = 'T20 3 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle3Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle3Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle3Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle3Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 102){
 
                                             combinationToParagraph.innerHTML = 'T20 10 D16';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle10Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle10Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle10Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle10Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 101){
 
                                             combinationToParagraph.innerHTML = 'T20 1 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 100){
 
                                             combinationToParagraph.innerHTML = 'T20 D20';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 99){
 
                                             combinationToParagraph.innerHTML = 'T19 10 D16';
 
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreTopSingle10Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle10Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreTopSingle10Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle10Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 98){
 
                                             combinationToParagraph.innerHTML = 'T20 D19';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble19Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble19Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 97){
 
                                             combinationToParagraph.innerHTML = 'T19 D20';
 
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 96){
 
                                             combinationToParagraph.innerHTML = 'T20 D18';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble18Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble18Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 95){
 
                                             combinationToParagraph.innerHTML = 'T19 D19';
 
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreDouble19Name).classList.add("orange");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble19Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 94){
 
                                             combinationToParagraph.innerHTML = 'T18 D20';
 
-                                            document.getElementById(scoreTripple18Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple18Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 93){
 
                                             combinationToParagraph.innerHTML = 'T19 D18';
 
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreDouble18Name).classList.add("orange");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble18Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 92){
 
                                             combinationToParagraph.innerHTML = 'T20 D16';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 91){
 
                                             combinationToParagraph.innerHTML = 'T17 D20';
 
-                                            document.getElementById(scoreTripple17Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple17Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 90){
 
                                             combinationToParagraph.innerHTML = 'T20 D15';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble15Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble15Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 89){
 
                                             combinationToParagraph.innerHTML = 'T19 D16';
 
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 88){
 
                                             combinationToParagraph.innerHTML = 'T16 D20';
 
-                                            document.getElementById(scoreTripple16Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple16Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 87){
 
                                             combinationToParagraph.innerHTML = 'T17 D18';
 
-                                            document.getElementById(scoreTripple17Name).classList.add("orange");
-                                            document.getElementById(scoreDouble18Name).classList.add("orange");
+                                            document.getElementById(scoreTripple17Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble18Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 86){
 
                                             combinationToParagraph.innerHTML = 'T18 D16';
 
-                                            document.getElementById(scoreTripple18Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple18Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 85){
 
                                             combinationToParagraph.innerHTML = 'T15 D20';
 
-                                            document.getElementById(scoreTripple15Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple15Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 84){
 
                                             combinationToParagraph.innerHTML = 'T20 D12';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble12Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble12Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 83){
 
                                             combinationToParagraph.innerHTML = 'T17 D16';
 
-                                            document.getElementById(scoreTripple17Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple17Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 82){
 
                                             combinationToParagraph.innerHTML = 'T14 D20';
 
-                                            document.getElementById(scoreTripple14Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple14Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 81){
 
                                             combinationToParagraph.innerHTML = 'T19 D12';
 
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreDouble12Name).classList.add("orange");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble12Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 80){
 
                                             combinationToParagraph.innerHTML = 'T20 D10';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble10Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble10Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 79){
 
                                             combinationToParagraph.innerHTML = 'T13 D20';
 
-                                            document.getElementById(scoreTripple13Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple13Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 78){
 
                                             combinationToParagraph.innerHTML = 'T18 D12';
 
-                                            document.getElementById(scoreTripple18Name).classList.add("orange");
-                                            document.getElementById(scoreDouble12Name).classList.add("orange");
+                                            document.getElementById(scoreTripple18Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble12Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 77){
 
                                             combinationToParagraph.innerHTML = 'T19 D10';
 
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreDouble10Name).classList.add("orange");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble10Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 76){
 
                                             combinationToParagraph.innerHTML = 'T20 D8';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble8Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble8Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 75){
 
                                             combinationToParagraph.innerHTML = 'T17 D12';
 
-                                            document.getElementById(scoreTripple17Name).classList.add("orange");
-                                            document.getElementById(scoreDouble12Name).classList.add("orange");
+                                            document.getElementById(scoreTripple17Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble12Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 74){
 
                                             combinationToParagraph.innerHTML = 'T14 D16';
 
-                                            document.getElementById(scoreTripple14Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple14Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 73){
 
                                             combinationToParagraph.innerHTML = 'T19 D8';
 
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreDouble8Name).classList.add("orange");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble8Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 72){
 
                                             combinationToParagraph.innerHTML = 'T16 D12';
 
-                                            document.getElementById(scoreTripple16Name).classList.add("orange");
-                                            document.getElementById(scoreDouble12Name).classList.add("orange");
+                                            document.getElementById(scoreTripple16Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble12Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 71){
 
                                             combinationToParagraph.innerHTML = 'T13 D16';
 
-                                            document.getElementById(scoreTripple13Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple13Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 70){
 
                                             combinationToParagraph.innerHTML = 'T10 D20';
 
-                                            document.getElementById(scoreTripple10Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTripple10Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 69){
 
                                             combinationToParagraph.innerHTML = 'T15 D12';
 
-                                            document.getElementById(scoreTripple15Name).classList.add("orange");
-                                            document.getElementById(scoreDouble12Name).classList.add("orange");
+                                            document.getElementById(scoreTripple15Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble12Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 68){
 
                                             combinationToParagraph.innerHTML = 'T20 D4';
 
-                                            document.getElementById(scoreTripple20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble4Name).classList.add("orange");
+                                            document.getElementById(scoreTripple20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble4Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 67){
 
                                             combinationToParagraph.innerHTML = 'T17 D8';
 
-                                            document.getElementById(scoreTripple17Name).classList.add("orange");
-                                            document.getElementById(scoreDouble8Name).classList.add("orange");
+                                            document.getElementById(scoreTripple17Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble8Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 66){
 
                                             combinationToParagraph.innerHTML = 'T10 D18';
 
-                                            document.getElementById(scoreTripple10Name).classList.add("orange");
-                                            document.getElementById(scoreDouble18Name).classList.add("orange");
+                                            document.getElementById(scoreTripple10Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble18Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 65){
 
                                             combinationToParagraph.innerHTML = 'T19 D4';
 
-                                            document.getElementById(scoreTripple19Name).classList.add("orange");
-                                            document.getElementById(scoreDouble4Name).classList.add("orange");
+                                            document.getElementById(scoreTripple19Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble4Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 64){
 
                                             combinationToParagraph.innerHTML = 'T16 D8';
 
-                                            document.getElementById(scoreTripple16Name).classList.add("orange");
-                                            document.getElementById(scoreDouble8Name).classList.add("orange");
+                                            document.getElementById(scoreTripple16Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble8Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 63){
 
                                             combinationToParagraph.innerHTML = 'T13 D12';
 
-                                            document.getElementById(scoreTripple13Name).classList.add("orange");
-                                            document.getElementById(scoreDouble12Name).classList.add("orange");
+                                            document.getElementById(scoreTripple13Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble12Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 62){
 
                                             combinationToParagraph.innerHTML = 'T10 D16';
 
-                                            document.getElementById(scoreTripple10Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTripple10Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 61){
 
                                             combinationToParagraph.innerHTML = 'T15 D8';
 
-                                            document.getElementById(scoreTripple15Name).classList.add("orange");
-                                            document.getElementById(scoreDouble8Name).classList.add("orange");
+                                            document.getElementById(scoreTripple15Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble8Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 60){
 
                                             combinationToParagraph.innerHTML = '20 D20';
 
-                                            document.getElementById(scoreTopSingle20Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle20Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 59){
 
                                             combinationToParagraph.innerHTML = '19 D20';
 
-                                            document.getElementById(scoreTopSingle19Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle19Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle19Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle19Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 58){
 
                                             combinationToParagraph.innerHTML = '18 D20';
 
-                                            document.getElementById(scoreTopSingle18Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle18Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle18Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle18Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 57){
 
                                             combinationToParagraph.innerHTML = '17 D20';
 
-                                            document.getElementById(scoreTopSingle17Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle17Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle17Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle17Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 56){
 
                                             combinationToParagraph.innerHTML = '16 D20';
 
-                                            document.getElementById(scoreTopSingle16Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle16Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle16Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle16Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 55){
 
                                             combinationToParagraph.innerHTML = '15 D20';
 
-                                            document.getElementById(scoreTopSingle15Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle15Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle15Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle15Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 54){
 
                                             combinationToParagraph.innerHTML = '14 D20';
 
-                                            document.getElementById(scoreTopSingle14Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle14Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle14Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle14Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 53){
 
                                             combinationToParagraph.innerHTML = '13 D20';
 
-                                            document.getElementById(scoreTopSingle13Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle13Name).classList.add("orange");
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle13Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle13Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 52){
 
                                             combinationToParagraph.innerHTML = '20 D16';
 
-                                            document.getElementById(scoreTopSingle20Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle20Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle20Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle20Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 51){
 
                                             combinationToParagraph.innerHTML = '19 D16';
 
-                                            document.getElementById(scoreTopSingle19Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle19Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle19Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle19Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 50){
 
                                             combinationToParagraph.innerHTML = '18 D16';
 
-                                            document.getElementById(scoreTopSingle18Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle18Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle18Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle18Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 49){
 
                                             combinationToParagraph.innerHTML = '17 D16';
 
-                                            document.getElementById(scoreTopSingle17Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle17Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle17Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle17Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 48){
 
                                             combinationToParagraph.innerHTML = '16 D16';
 
-                                            document.getElementById(scoreTopSingle16Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle16Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle16Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle16Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 47){
 
                                             combinationToParagraph.innerHTML = '15 D16';
 
-                                            document.getElementById(scoreTopSingle15Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle15Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle15Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle15Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 46){
 
                                             combinationToParagraph.innerHTML = '14 D16';
 
-                                            document.getElementById(scoreTopSingle14Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle14Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle14Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle14Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 45){
 
                                             combinationToParagraph.innerHTML = '13 D16';
 
-                                            document.getElementById(scoreTopSingle13Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle13Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle13Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle13Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 44){
 
                                             combinationToParagraph.innerHTML = '12 D16';
 
-                                            document.getElementById(scoreTopSingle12Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle12Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle12Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle12Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 43){
 
                                             combinationToParagraph.innerHTML = '11 D16';
 
-                                            document.getElementById(scoreTopSingle11Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle11Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle11Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle11Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 42){
 
                                             combinationToParagraph.innerHTML = '10 D16';
 
-                                            document.getElementById(scoreTopSingle10Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle10Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle10Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle10Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 41){
 
                                             combinationToParagraph.innerHTML = '9 D16';
 
-                                            document.getElementById(scoreTopSingle9Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle9Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle9Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle9Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 40){
 
                                             combinationToParagraph.innerHTML = 'D20';
 
-                                            document.getElementById(scoreDouble20Name).classList.add("orange");
+                                            document.getElementById(scoreDouble20Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 39){
 
                                             combinationToParagraph.innerHTML = '7 D16';
 
-                                            document.getElementById(scoreTopSingle7Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle7Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle7Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle7Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 38){
 
                                             combinationToParagraph.innerHTML = 'D19';
 
-                                            document.getElementById(scoreDouble19Name).classList.add("orange");
+                                            document.getElementById(scoreDouble19Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 37){
 
                                             combinationToParagraph.innerHTML = '5 D16';
 
-                                            document.getElementById(scoreTopSingle5Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle5Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle5Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle5Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 36){
 
                                             combinationToParagraph.innerHTML = 'D18';
 
-                                            document.getElementById(scoreDouble18Name).classList.add("orange");
+                                            document.getElementById(scoreDouble18Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 35){
 
                                             combinationToParagraph.innerHTML = '3 D16';
 
-                                            document.getElementById(scoreTopSingle3Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle3Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle3Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle3Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 34){
 
                                             combinationToParagraph.innerHTML = 'D17';
 
-                                            document.getElementById(scoreDouble17Name).classList.add("orange");
+                                            document.getElementById(scoreDouble17Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 33){
 
                                             combinationToParagraph.innerHTML = '1 D16';
 
-                                            document.getElementById(scoreTopSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 32){
 
                                             combinationToParagraph.innerHTML = 'D16';
 
-                                            document.getElementById(scoreDouble16Name).classList.add("orange");
+                                            document.getElementById(scoreDouble16Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 31){
 
                                             combinationToParagraph.innerHTML = '3 D14';
 
-                                            document.getElementById(scoreTopSingle3Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle3Name).classList.add("orange");
-                                            document.getElementById(scoreDouble14Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle3Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle3Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble14Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 30){
 
                                             combinationToParagraph.innerHTML = 'D15';
 
-                                            document.getElementById(scoreDouble15Name).classList.add("orange");
+                                            document.getElementById(scoreDouble15Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 29){
 
                                             combinationToParagraph.innerHTML = '1 D14';
 
-                                            document.getElementById(scoreTopSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreDouble14Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble14Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 28){
 
                                             combinationToParagraph.innerHTML = 'D14';
 
-                                            document.getElementById(scoreDouble14Name).classList.add("orange");
+                                            document.getElementById(scoreDouble14Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 27){
 
                                             combinationToParagraph.innerHTML = '3 D12';
 
-                                            document.getElementById(scoreTopSingle3Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle3Name).classList.add("orange");
-                                            document.getElementById(scoreDouble12Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle3Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle3Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble12Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 26){
 
                                             combinationToParagraph.innerHTML = 'D13';
 
-                                            document.getElementById(scoreDouble13Name).classList.add("orange");
+                                            document.getElementById(scoreDouble13Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 25){
                                             
                                             combinationToParagraph.innerHTML = '1 D12';
 
-                                            document.getElementById(scoreTopSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreDouble12Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble12Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 24){
 
                                             combinationToParagraph.innerHTML = 'D12';
 
-                                            document.getElementById(scoreDouble12Name).classList.add("orange");
+                                            document.getElementById(scoreDouble12Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 23){
 
                                             combinationToParagraph.innerHTML = '3 D10';
 
-                                            document.getElementById(scoreTopSingle3Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle3Name).classList.add("orange");
-                                            document.getElementById(scoreDouble10Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle3Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle3Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble10Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 22){
 
                                             combinationToParagraph.innerHTML = 'D11';
 
-                                            document.getElementById(scoreDouble11Name).classList.add("orange");
+                                            document.getElementById(scoreDouble11Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 21){
 
                                             combinationToParagraph.innerHTML = '1 D10';
 
-                                            document.getElementById(scoreTopSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreDouble10Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble10Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 20){
 
                                             combinationToParagraph.innerHTML = 'D10';
 
-                                            document.getElementById(scoreDouble10Name).classList.add("orange");
+                                            document.getElementById(scoreDouble10Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 19){
 
                                             combinationToParagraph.innerHTML = '3 D8';
 
-                                            document.getElementById(scoreTopSingle3Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle3Name).classList.add("orange");
-                                            document.getElementById(scoreDouble8Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle3Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle3Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble8Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 18){
 
                                             combinationToParagraph.innerHTML = 'D9';
 
-                                            document.getElementById(scoreDouble9Name).classList.add("orange");
+                                            document.getElementById(scoreDouble9Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 17){
 
                                             combinationToParagraph.innerHTML = '1 D8';
 
-                                            document.getElementById(scoreTopSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreDouble8Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble8Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 16){
 
                                             combinationToParagraph.innerHTML = 'D8';
 
-                                            document.getElementById(scoreDouble8Name).classList.add("orange");
+                                            document.getElementById(scoreDouble8Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 15){
 
                                             combinationToParagraph.innerHTML = '3 D6';
 
-                                            document.getElementById(scoreTopSingle3Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle3Name).classList.add("orange");
-                                            document.getElementById(scoreDouble6Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle3Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle3Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble6Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 14){
 
                                             combinationToParagraph.innerHTML = 'D7';
 
-                                            document.getElementById(scoreDouble7Name).classList.add("orange");
+                                            document.getElementById(scoreDouble7Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 13){
 
                                             combinationToParagraph.innerHTML = '1 D6';
 
-                                            document.getElementById(scoreTopSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreDouble6Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble6Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 12){
 
                                             combinationToParagraph.innerHTML = 'D6';
 
-                                            document.getElementById(scoreDouble6Name).classList.add("orange");
+                                            document.getElementById(scoreDouble6Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 11){
 
                                             combinationToParagraph.innerHTML = '3 D4';
 
-                                            document.getElementById(scoreTopSingle3Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle3Name).classList.add("orange");
-                                            document.getElementById(scoreDouble4Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle3Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle3Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble4Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 10){
 
                                             combinationToParagraph.innerHTML = 'D5';
 
-                                            document.getElementById(scoreDouble5Name).classList.add("orange");
+                                            document.getElementById(scoreDouble5Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 9){
 
                                             combinationToParagraph.innerHTML = '1 D4';
 
-                                            document.getElementById(scoreTopSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreDouble4Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble4Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 8){
 
                                             combinationToParagraph.innerHTML = 'D4';
 
-                                            document.getElementById(scoreDouble4Name).classList.add("orange");
+                                            document.getElementById(scoreDouble4Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 7){
 
                                             combinationToParagraph.innerHTML = '3 D2';
 
-                                            document.getElementById(scoreTopSingle3Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle3Name).classList.add("orange");
-                                            document.getElementById(scoreDouble2Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle3Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle3Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble2Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 6){
 
                                             combinationToParagraph.innerHTML = 'D3';
 
-                                            document.getElementById(scoreDouble3Name).classList.add("orange");
+                                            document.getElementById(scoreDouble3Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 5){
 
                                             combinationToParagraph.innerHTML = '1 D2';
 
-                                            document.getElementById(scoreTopSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreDouble2Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble2Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 4){
 
                                             combinationToParagraph.innerHTML = 'D2';
 
-                                            document.getElementById(scoreDouble2Name).classList.add("orange");
+                                            document.getElementById(scoreDouble2Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 3){
 
                                             combinationToParagraph.innerHTML = '1 D1';
 
-                                            document.getElementById(scoreTopSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreBottomSingle1Name).classList.add("orange");
-                                            document.getElementById(scoreDouble1Name).classList.add("orange");
+                                            document.getElementById(scoreTopSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreBottomSingle1Name).classList.add("color-combination");
+                                            document.getElementById(scoreDouble1Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 2){
 
                                             combinationToParagraph.innerHTML = 'D1';
 
-                                            document.getElementById(scoreDouble1Name).classList.add("orange");
+                                            document.getElementById(scoreDouble1Name).classList.add("color-combination");
 
                                         } else if(document.getElementById('score-value').value == 0){
 

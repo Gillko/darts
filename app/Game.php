@@ -26,9 +26,12 @@ class Game extends Model
     }
 
     //this is for the winner of the game
-    public function player()
-    {
-        return $this->hasOne('App\Player');
+    /*public function winner(){
+        return $this->hasOne('App\Player', 'winner', 'player_id');
+    }*/
+
+    public function player(){
+        return $this->belongsTo('App\Player', 'winner');
     }
 
 	/**

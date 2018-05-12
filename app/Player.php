@@ -30,9 +30,8 @@ class Player extends Model
     }
 
     //the game the player has won
-    public function game()
-    {
-        return $this->belongsTo('App\Game');
+    public function game(){
+        return $this->hasOne('App\Game');
     }
 
     public function won(){

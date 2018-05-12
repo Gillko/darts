@@ -11,7 +11,7 @@
         "paging"      : false,
         "info"        : false,
         "searching"   : false,
-        "order"       : [[ 4, "desc" ]]
+        "order"       : [[ 5, "desc" ]]
       });
     });
   </script>
@@ -28,11 +28,12 @@
               </button>
             </a>
 
-            <table class="table table-bordered" id="table-d">
+            <table class="table table-striped table-bordered table-hover" id="table-d">
               <thead>
                 <tr>
                   <th scope="col">Id</th>
                   <th scope="col">Player</th>
+                  <th scope="col">Nickname</th>
                   <th scope="col">Played games</th>
                   <th scope="col">Won games</th>
                   <th scope="col">Percentage</th>
@@ -42,7 +43,8 @@
                 @foreach($players as $player)
                     <tr>
                       <th scope="row">{{ $player->id }}</th>
-                      <td>{{ $player->firstname }} {{ $player->lastname }}</td>
+                      <td><a href="{{ URL::to('/players/' . $player->id) }}">{{ $player->firstname }} {{ $player->lastname }}</a></td>
+                      <td><a href="{{ URL::to('/players/' . $player->id) }}">{{ $player->nickname }}</a></td>
                       <td>{{ $player->games_count }}</td>
                       <td>{{ $player->won->count() }}</td>
                       <td>{{ number_format(( ($player->won->count() / $player->games_count) * 100 ), 2) }}</td>

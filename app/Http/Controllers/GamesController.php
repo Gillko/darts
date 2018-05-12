@@ -96,11 +96,6 @@ class GamesController extends Controller
             $game->name     = $request->name;
             $game->date     = $request->date;
             $game->hour     = $request->hour;
-            //$game->players  = $request->players;
-            //$game->players()->attach('players_list');
-
-           
-
             $game->winner = $request->winner;
             $game->save();
             $game->players()->attach($request->players);
@@ -151,7 +146,10 @@ class GamesController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $game = Game::findOrFail($id);
+        $game->delete();
+
+        return response()->json($game);
     }
 
     /**

@@ -1,31 +1,72 @@
 @extends('layouts.app')
 
+@section('header')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+@endsection
+
 @section('content')
 <div class="container">
     <div class="row">
         <div class="col-md-12">
             <h2 class="title-d">Games</h2>
-            <!-- <a class="create-d" href="{{ url('/games/create') }}"> -->
             <a class="create-d" data-toggle="modal" data-target="#addModal" class="add-modal">
               <button class="btn btn-primary">
                 <i class="fa fa-plus fa-1x" aria-hidden="true"></i>
               </button>
             </a>
 
-            <div class="foreach-d">
-                @foreach($games as $game)
-                    <a href="{{ URL::to('/games/' . $game->id) }}">
-                        <p>{{ $game->name }} - {{ $game->date }} - {{ $game->hour }}</p>
-                    </a>
-                @endforeach
+            <div class="panel-body">
+                <table class="table table-striped table-bordered table-hover" id="gameTable">
+                    <thead>
+                        <tr>
+                            <th><i class="fa fa-list-ol fa-1x"></i></th>
+                            <th><i class="fa fa-hashtag fa-1x"></i></th>
+                            <th><i class="fa fa-gamepad fa-1x"></i></th>
+                            <th><i class="fa fa-calendar fa-1x"></i></th>
+                            <th><i class="fa fa-clock-o fa-1x"></i></th>
+                            <th><i class="fa fa-users fa-1x"></i></th>
+                            <th>
+                                <i class="fa fa-trophy fa-1x"></i>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($games as $indexKey => $game)
+                            <tr class="game{{$game->id}}">
+                                <td class="col1">{{ $indexKey+1 }}</td>
+                                <td>{{ $game->id }}</td>
+                                <td>{{ $game->name }}</td>
+                                <td>{{ $game->date }}</td>
+                                <td>{{ $game->hour }}</td>
+                                <td>
+                                    @foreach ($game->players as $player)
+                                        <p><a href="{{ URL::to('/players/' . $player->id) }}">{{ $player->firstname }} {{ $player->lastname }}</a></p>
+                                    @endforeach
+                                </td>
+                                <td>{{ $game->player->nickname }}</td>
+                                
+                                <td>
+                                    <button class="show-modal btn btn-primary" data-id="{{$game->id}}" data-name="{{$game->name}}">
+                                        <span class="fa fa-eye fa-1x"></span>
+                                    </button>
+                                    <button class="edit-modal btn btn-primary" data-id="{{$game->id}}" data-name="{{$game->name}}">
+                                        <span class="fa fa-edit fa-1x"></span>
+                                    </button>
+                                    <button class="delete-modal btn btn-primary" data-id="{{$game->id}}" data-name="{{$game->name}}">
+                                        <span class="fa fa-trash-o fa-1x"></span>
+                                    </button>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
 
-
+        <!-- MODAL FOR ADDING GAME -->
         <div class="modal fade" id="addModal">
           <div class="modal-dialog modal-dialog-d">
             <div class="modal-content">
-
               <!-- Modal Header -->
               <div class="modal-header">
                 <h4 class="modal-title">Create Game</h4>
@@ -57,7 +98,6 @@
 
                     <div class="form-group">
                         <label for="players">{{ __('Players') }}</label>
-                        <!-- <select id="players_add" class="form-control" multiple> -->
                         <select name="player_list[]" id="players_add" class="form-control" multiple>
                             @foreach($players as $player)
                                 <option value="{{ $player->id }}">{{ $player->firstname }}</option>
@@ -80,17 +120,58 @@
 
               <!-- Modal footer -->
               <div class="modal-footer">
-                <button type="button" class="btn btn-success add" data-dismiss="modal">
-                    <span id="" class='glyphicon glyphicon-check'></span> Add
+                <!-- The add class is used for error messages -->
+                <button type="button" class="btn btn-primary add" data-dismiss="modal">
+                    <span class='fa fa-plus fa-1x'></span>
                 </button>
-                <button type="button" class="btn btn-warning" data-dismiss="modal">
-                    <span class='glyphicon glyphicon-remove'></span> Close
+                <button type="button" class="btn btn-primary" data-dismiss="modal">
+                    <span class='fa fa-window-close-o fa-1x'></span>
                 </button>
               </div>
 
             </div>
           </div>
         </div>
+        <!-- MODAL FOR ADDING GAME -->
+
+        <!-- MODAL FOR DELETING GAME -->
+        <div class="modal fade" id="deleteModal">
+          <div class="modal-dialog modal-dialog-d">
+            <div class="modal-content">
+              <!-- Modal Header -->
+              <div class="modal-header">
+                <h4 class="modal-title">Are you sure you want to delete the following game?</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+              </div>
+
+              <!-- Modal body -->
+              <div class="modal-body">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label for="id">{{ __('Id') }}</label>
+                        <input type="text" class="form-control" id="id_delete" disabled>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="name">{{ __('Name') }}</label>
+                        <input type="text" class="form-control" id="name_delete" disabled>
+                    </div>
+                </form>
+              </div>
+
+              <!-- Modal footer -->
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary delete" data-dismiss="modal">
+                    <span class='fa fa-trash-o fa-1x'></span>
+                </button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">
+                    <span class='fa fa-window-close-o fa-1x'></span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- MODAL FOR DELETING GAME -->
     </div>
 </div>
 
@@ -111,6 +192,7 @@
 
     <!-- AJAX CRUD -->
     <script type="text/javascript">
+        /* ADDING A GAME */
         $(document).on('click', '.add-modal', function() {
             $('#addModal').modal('show');
         });
@@ -127,8 +209,11 @@
                     'winner': $('#winner_add').val()
                 },
                 success: function(data) {
-                    $('.errorTitle').addClass('hidden');
-                    $('.errorContent').addClass('hidden');
+                    $('.errorName').addClass('hidden');
+                    $('.errorDate').addClass('hidden');
+                    $('.errorHour').addClass('hidden');
+                    $('.errorPlayers').addClass('hidden');
+                    $('.errorWinner').addClass('hidden');
 
                     if ((data.errors)) {
                         setTimeout(function () {
@@ -157,30 +242,40 @@
                             $('.errorWinner').text(data.errors.winner);
                         }
                     } else {
-                        toastr.success('Successfully added Post!', 'Success Alert', {timeOut: 5000});
-                        $('#postTable').prepend("<tr class='item" + data.id + "'><td class='col1'>" + data.id + "</td><td>" + data.name + "</td><td>" + data.date + "</td><td class='text-center'><input type='checkbox' class='new_published' data-id='" + data.id + " '></td><td>Just now!</td><td><button class='show-modal btn btn-success' data-id='" + data.id + "' data-title='" + data.title + "' data-content='" + data.content + "'><span class='glyphicon glyphicon-eye-open'></span> Show</button> <button class='edit-modal btn btn-info' data-id='" + data.id + "' data-title='" + data.title + "' data-content='" + data.content + "'><span class='glyphicon glyphicon-edit'></span> Edit</button> <button class='delete-modal btn btn-danger' data-id='" + data.id + "' data-title='" + data.title + "' data-content='" + data.content + "'><span class='glyphicon glyphicon-trash'></span> Delete</button></td></tr>");
-                        $('.new_published').iCheck({
-                            checkboxClass: 'icheckbox_square-yellow',
-                            radioClass: 'iradio_square-yellow',
-                            increaseArea: '20%'
-                        });
-                        $('.new_published').on('ifToggled', function(event){
-                            $(this).closest('tr').toggleClass('warning');
-                        });
-                        $('.new_published').on('ifChanged', function(event){
-                            id = $(this).data('id');
-                            $.ajax({
-                                type: 'POST',
-                                url: "{{ URL::route('changeStatus') }}",
-                                data: {
-                                    '_token': $('input[name=_token]').val(),
-                                    'id': id
-                                },
-                                success: function(data) {
-                                    // empty
-                                },
-                            });
-                        });
+                        toastr.success('Successfully added Game!', 'Success Alert', {timeOut: 5000});
+
+                        $('#gameTable').prepend(
+                            "<tr class='game" + data.id + "'>" 
+                                + "<td class='col1'>" + data.id + "</td>"
+
+                                + "<td>" + data.id + "</td>"
+
+                                + "<td>" + data.name + "</td>"
+                                
+                                + "<td>" + data.date + "</td>"
+
+                                + "<td>" + data.hour + "</td>"
+
+                                + "<td>" + data.players + "</td>" 
+
+                                + "<td>" + data.winner + "</td>"
+                                
+                                + "<td>" 
+                                    + "<button class='show-modal btn btn-primary' data-id='" + data.id + "' data-name='" + data.name + "'>"
+                                        + "<span class='fa fa-eye fa-1x'>"
+                                        + "</span>"
+                                    + "</button>" 
+                                    + "<button class='edit-modal btn btn-primary' data-id='" + data.id + "' data-name='" + data.name + "'>"
+                                        + "<span class='fa fa-edit fa-1x'>"
+                                        + "</span>"
+                                    + "</button>" 
+                                    + "<button class='delete-modal btn btn-primary' data-id='" + data.id + "' data-name='" + data.name + "'>"
+                                        + "<span class='fa fa-trash-o fa-1x'>"
+                                        + "</span>"
+                                    + "</button>"
+                                + "</td>"
+                            + "</tr>"
+                        );
                         $('.col1').each(function (index) {
                             $(this).html(index+1);
                         });
@@ -188,6 +283,36 @@
                 },
             });
         });
+        /* ADDING A GAME */
+
+        /* DELETING A GAME */
+        $(document).on('click', '.delete-modal', function() {
+            $('#id_delete').val($(this).data('id'));
+            $('#name_delete').val($(this).data('name'));
+
+            $('#deleteModal').modal('show');
+            id = $('#id_delete').val();
+        });
+        $('.modal-footer').on('click', '.delete', function() {
+            $.ajax({
+                type: 'DELETE',
+                url: 'games/' + id,
+                data: {
+                    '_token': $('input[name=_token]').val(),
+                },
+                success: function(data) {
+                    toastr.success('Successfully deleted Game!', 'Success Alert', {timeOut: 5000});
+
+                    /* every <tr> has a class with the name of game and index of the game */
+                    /* this is used to live delete the game in the list of games */
+                    $('.game' + data['id']).remove();
+                    $('.col1').each(function (index) {
+                        $(this).html(index+1);
+                    });
+                }
+            });
+        });
+        /* DELETING A GAME */
     </script>
     <!-- AJAX CRUD -->
 @endsection
