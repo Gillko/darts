@@ -72,14 +72,14 @@
             opacity: 0.5;
             color: #fff;
         }
-        .minus-points,
+        /*.minus-points,*/
         .tripple-points,
         .double-points{
             text-align: right;
         }
-        .minus-points::before{
+        /*.minus-points::before{
             content: "- ";
-        }
+        }*/
         p{
             margin-bottom: 0rem;
         }
@@ -88,7 +88,7 @@
             padding: 15px 0 0 0;
         }
         #data-toggle-button,
-        #data-toggle-button-adjust,
+        #data-toggle-button-undo,
         #button-start,
         #button-add-another-player,
         #data-toggle-show-log,
@@ -119,6 +119,14 @@
             opacity: 0.5;
             background-color: #2d77b8;
             color: #fff;
+        }
+        #arrow-one,
+        #arrow-two,
+        #arrow-three{
+           visibility: hidden;
+        }
+        #current-throw{
+            font-size: 35px;
         }
         /*override bootstrap*/
         select,
@@ -248,8 +256,14 @@
                 <div class="col-md-6">
                     <div id="overall-points-board">
                         <div class="row">
-                            <div class="col-md-12 text-right">
-                                <button type="button" class="btn btn-primary btn-point button-adjust" id="button-adjust">
+                            <div class="col-md-4 text-left">
+                                <p><span id="current-throw">0</span></p>
+                                <img src="{{ asset('img/arrow.png') }}" alt="arrow one" id="arrow-one" width="25" height="25">
+                                <img src="{{ asset('img/arrow.png') }}" alt="arrow two" id="arrow-two" width="25" height="25">
+                                <img src="{{ asset('img/arrow.png') }}" alt="arrow three" id="arrow-three" width="25" height="25">
+                            </div>
+                            <div class="col-md-8 text-right">
+                                <button type="button" class="btn btn-primary btn-point button-undo" id="button-undo">
                                     <span class="fa fa-undo fa-1x"></span>
                                 </button>
                                 <button type="button" class="btn btn-primary btn-point" id="button-log">
@@ -267,7 +281,7 @@
                                 <button type="button" class="btn btn-primary btn-point" id="rematch">
                                     <span class="fa fa-gamepad fa-1x"></span>
                                 </button>
-                                <!-- <button type="button" class="btn btn-danger btn-point button-adjust" id="button-adjust">Undo</button> -->
+                                <!-- <button type="button" class="btn btn-danger btn-point button-undo" id="button-undo">Undo</button> -->
                                 <!-- <button type="button" class="btn btn-warning btn-point" id="button-log">Show Log</button> -->
                                 <!-- <button type="button" class="btn btn-primary btn-point" id="button-delete-active-player">Delete Active Player</button> -->
                                 <!-- <button type="button" class="btn btn-success btn-point" id="next-player">Next Player</button> -->
@@ -696,8 +710,8 @@
                     </div>
                 </div>
             </div>
-            <button id="data-toggle-button-adjust" type="button" data-toggle="modal" data-target="#modal-error-adjust"></button>
-            <div id="modal-error-adjust" class="modal fade" role="dialog">
+            <button id="data-toggle-button-undo" type="button" data-toggle="modal" data-target="#modal-error-undo"></button>
+            <div id="modal-error-undo" class="modal fade" role="dialog">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -910,9 +924,14 @@
                         scoreboard.className = 'col-md-12 col-12 player';
                         scoreboard.id = 'player';
                         scoreboard.innerHTML = 
-                            '<div class="row points-player hide" id="points-player">' 
-                                + '<div class="col-md-6 col-6 points-name" id="points-name"></div>' 
-                                    + '<div class="col-md-6 col-6 points-minus-log" id="points-minus-log"></div></div>' 
+                                        '<div class="row points-player hide" id="points-player">' 
+                                            + '<div class="col-md-4 col-4 points-name" id="points-name">'
+                                            + '</div>' 
+                                            + '<div class="col-md-4 col-4 points-minus-log" id="points-minus-log">'
+                                            + '</div>'
+                                            + '<div class="col-md-4 col-4 points-after-third-arrow" id="points-after-third-arrow">'
+                                            + '</div>'
+                                        + '</div>' 
                                         + '<div class="board">' 
                                             + '<div class="row">' 
                                                 + '<div class="col-md-6 col-sm-6 col-6">' 
@@ -922,7 +941,8 @@
                                                     + '<input class="form-control form-control-points score-value" id="score-value" value="' + typeOfGame + '" disabled/>'
                                                 + '</div>'
                                             + '</div>'
-                                            + '<div class="combination" id="combination"></div>'
+                                            + '<div class="combination" id="combination">' 
+                                            + '</div>'
                                         + '</div>'
                                     + '</div>'
                                 + '<div>'
@@ -1033,13 +1053,9 @@
                                     if (showhide.classList.contains('hide')) {
                                         showhide.classList.remove('hide');
                                         showhide.classList.add('show');
-
-                                        //buttonLog.innerHTML = "Hide Log";
                                     } else{
                                         showhide.classList.remove('show');
                                         showhide.classList.add('hide');
-
-                                        //buttonLog.innerHTML = "Show Log";
                                     }
                                 } else {
                                     var dataToggleShowLog = document.getElementById('data-toggle-show-log');
@@ -1056,14 +1072,57 @@
 
                         var buttonsInOverallPointsBoard = document.getElementById('overall-points-board').getElementsByTagName('path');
 
-                        for(var b=0; b<buttonsInOverallPointsBoard.length; b++){
+                        for(var b = 0; b < buttonsInOverallPointsBoard.length; b++){
                             buttonsInOverallPointsBoard[b].onclick = (function() {
 
                                 return function() {
                                     var score = document.getElementById('score-value').value;
 
                                     var minusScore = this.innerHTML;
-                                    console.log(minusScore);
+
+                                    if (count == 0) {
+                                        firstArrowStorage = minusScore;
+                                        localStorage.setItem('firstArrow', firstArrowStorage);
+
+                                        firstArrowScore = localStorage.getItem('firstArrow');
+                                        document.getElementById('current-throw').innerHTML = firstArrowScore;
+
+                                        document.getElementById('arrow-one').style.visibility = 'visible';
+                                        document.getElementById('arrow-two').style.visibility = 'hidden';
+                                        document.getElementById('arrow-three').style.visibility = 'hidden';
+
+                                        var firstArrowToParagraph = document.createElement('p');
+                                        firstArrowToParagraph.innerHTML = 'first arrow';
+                                        firstArrowToParagraph.className = 'first-arrow-points';
+                                        document.getElementById('points-after-third-arrow').appendChild(firstArrowToParagraph);
+                                    } else if(count == 1){
+                                        secondArrowStorage = minusScore;
+                                        localStorage.setItem('secondArrow', secondArrowStorage);
+
+                                        var secondArrowScore = parseInt(localStorage.getItem('firstArrow')) + parseInt(localStorage.getItem('secondArrow'));
+                                        document.getElementById('current-throw').innerHTML = secondArrowScore;
+
+                                        document.getElementById('arrow-two').style.visibility = 'visible';
+                                        document.getElementById('arrow-three').style.visibility = 'hidden';
+                                        
+                                        var secondArrowToParagraph = document.createElement('p');
+                                        secondArrowToParagraph.innerHTML = 'second arrow';
+                                        secondArrowToParagraph.className = 'second-arrow-points';
+                                        document.getElementById('points-after-third-arrow').appendChild(secondArrowToParagraph);
+                                    } else if(count == 2){
+                                        thirdArrowStorage = minusScore;
+                                        localStorage.setItem('thirddArrow', thirdArrowStorage);
+
+                                        var thirdArrowScore = parseInt(localStorage.getItem('firstArrow')) + parseInt(localStorage.getItem('secondArrow')) + parseInt(localStorage.getItem('thirddArrow'));
+                                        document.getElementById('current-throw').innerHTML = thirdArrowScore;
+
+                                        document.getElementById('arrow-three').style.visibility = 'visible';
+                                        
+                                        var thirdArrowToParagraph = document.createElement('p');
+                                        thirdArrowToParagraph.innerHTML = thirdArrowScore;
+                                        thirdArrowToParagraph.className = 'third-arrow-points';
+                                        document.getElementById('points-after-third-arrow').appendChild(thirdArrowToParagraph);
+                                    }
                                         
                                     var newScore = score - minusScore;
 
@@ -2542,11 +2601,26 @@
 
                                             document.getElementById(scoreDouble1Name).classList.add("color-combination");
 
-                                        } else if(document.getElementById('score-value').value == 0){
+                                        } /*else if(document.getElementById('score-value').value == 1 || document.getElementById('score-value').value < 0){
+
+                                            var buttonUndo = document.getElementById('button-undo');
+
+                                            if (count == 1) {
+                                                buttonUndo.click();
+                                            } else if(count == 2){
+                                                buttonUndo.click();
+                                                buttonUndo.click();
+                                            } else if(count == 3){
+                                                buttonUndo.click();
+                                                buttonUndo.click();
+                                                buttonUndo.click();
+                                            }
+
+                                        }*/ else if(document.getElementById('score-value').value == 0){
 
                                             combinationToParagraph.innerHTML = 'WINNER';
 
-                                        } else if(document.getElementById('score-value').value < 0){
+                                        } else if(document.getElementById('score-value').value == 1 || document.getElementById('score-value').value < 0){
 
                                             combinationToParagraph.innerHTML = 'BUST';
 
@@ -2585,61 +2659,81 @@
                                 var nextPlayer = document.getElementById('player');
                                 nextPlayer.parentNode.appendChild(nextPlayer);
                             }
-                            console.log('clicked ' + count + ' times');
+                            console.log('count : ' + count);
                         };
 
                         document.getElementById( 'next-player' ).onclick = function() {
                             var nextPlayer = document.getElementById('player');
                             nextPlayer.parentNode.appendChild(nextPlayer);
                             count = 0;
-                            console.log('clicked ' + count + ' times');
+                            console.log('count : ' + count);
                         }
 
                         document.getElementById( 'rematch' ).onclick = function(){
 
                             count = 0;
-                            
                             var rematchGameType = localStorage.getItem('gameType');
                             var scoreboard; 
 
-                            tests = document.getElementsByClassName('points-name');
-                            testsSecond = document.getElementsByClassName('points-minus-log');
-                            testsThird = document.getElementsByClassName('combination');
-                            testsFourth = document.getElementsByClassName('score-value');
+                            pointsName = document.getElementsByClassName('points-name');
+                            pointsMinusLog = document.getElementsByClassName('points-minus-log');
+                            combination = document.getElementsByClassName('combination');
+                            scoreValue = document.getElementsByClassName('score-value');
+                            pointsAfterThirdArrow = document.getElementsByClassName('points-after-third-arrow');
 
-                            [].slice.call( tests ).forEach(function ( div ) {
-                                div.innerHTML = tests.innerHTML = "";
+                            [].slice.call( pointsName ).forEach(function ( div ) {
+                                div.innerHTML = pointsName.innerHTML = "";
                             });
 
-                            [].slice.call( testsSecond ).forEach(function ( div ) {
-                                div.innerHTML = testsSecond.innerHTML = "";
+                            [].slice.call( pointsMinusLog ).forEach(function ( div ) {
+                                div.innerHTML = pointsMinusLog.innerHTML = "";
                             });
 
-                            [].slice.call( testsThird ).forEach(function ( div ) {
-                                div.innerHTML = testsThird.innerHTML = "";
+                            [].slice.call( combination ).forEach(function ( div ) {
+                                div.innerHTML = combination.innerHTML = "";
                             });
 
-                            [].slice.call( testsFourth ).forEach(function ( input ) {
-                                input.value = testsFourth.value = rematchGameType;
+                            [].slice.call( scoreValue ).forEach(function ( input ) {
+                                input.value = scoreValue.value = rematchGameType;
 
                                 input.setAttribute('value', rematchGameType);
                             });
 
+                            [].slice.call( pointsAfterThirdArrow ).forEach(function ( div ) {
+                                div.innerHTML = pointsAfterThirdArrow.innerHTML = "";
+                            });
+
                             scoreboard = document.getElementById('scoreboard').innerHTML;
                             localStorage.setItem('scoreboard', scoreboard);
+
+                            document.getElementById('arrow-one').style.visibility = 'hidden';
+                            document.getElementById('arrow-two').style.visibility = 'hidden';
+                            document.getElementById('arrow-three').style.visibility = 'hidden';
+
+                            document.getElementById('current-throw').innerHTML = 0;
                         }
 
-                        var buttonAdjust = document.getElementById('button-adjust');
+                        var buttonUndo = document.getElementById('button-undo');
 
-                        if (buttonAdjust === null){
-                            console.log('buttonAdjust does not exist');
+                        if (buttonUndo === null){
+                            console.log('buttonUndo does not exist');
                         } else{
-                            document.getElementById('button-adjust').onclick = function() {
+                            document.getElementById('button-undo').onclick = function() {
                                 if (count <= 3 && count > 0) {
                                     count -= 1;
                                 }
+
+                                if (count == 0) {
+                                    var firstArrowUndo = parseInt(document.getElementById('current-throw').innerHTML) - parseInt(localStorage.getItem('firstArrow'));
+                                    document.getElementById('current-throw').innerHTML = firstArrowUndo;
+                                } else if(count == 1){
+                                    var secondArrowUndo = parseInt(document.getElementById('current-throw').innerHTML) - parseInt(localStorage.getItem('secondArrow'));
+                                    document.getElementById('current-throw').innerHTML = secondArrowUndo;
+                                } else if(count == 2){
+
+                                }
                                 
-                                console.log('clicked ' + count + ' times');
+                                console.log('count : ' + count);
                                 if(document.getElementById('points-name').innerHTML != ''){
 
                                     //Delete points input
@@ -2651,7 +2745,7 @@
 
                                     //Poins to input
                                     var pointsToInput = document.createElement('input');
-                                    pointsToInput.innerHTML = previousPointsInner;
+                                    //pointsToInput.innerHTML = previousPointsInner;
                                     pointsToInput.value = previousPointsInner;
                                     pointsToInput.className = 'form-control form-control-points score-value';
                                     pointsToInput.id = 'score-value';
@@ -2661,10 +2755,11 @@
 
                                     var previousPoints = document.getElementById('points-name').lastChild;
                                     var previousPointsMinus = document.getElementById('points-minus-log').lastChild;
-
+                                    var previousArrow = document.getElementById('points-after-third-arrow').lastChild;
 
                                     previousPoints.remove(previousPoints);
                                     previousPointsMinus.remove(previousPointsMinus);
+                                    previousArrow.remove(previousArrow);
 
                                     document.getElementById('combination').innerHTML = '';
 
@@ -4049,7 +4144,7 @@
                                         document.getElementById('combination').appendChild(combinationToParagraph);
                                         }
                                 } else{
-                                    var dataToggle = document.getElementById('data-toggle-button-adjust');
+                                    var dataToggle = document.getElementById('data-toggle-button-undo');
 
                                     dataToggle.click();
                                 }
