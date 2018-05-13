@@ -72,14 +72,10 @@
             opacity: 0.5;
             color: #fff;
         }
-        /*.minus-points,*/
         .tripple-points,
         .double-points{
             text-align: right;
         }
-        /*.minus-points::before{
-            content: "- ";
-        }*/
         p{
             margin-bottom: 0rem;
         }
@@ -264,17 +260,14 @@
                     <div id="overall-points-board">
                         <div class="row">
                             <div class="col-md-4 text-left">
-                                
-                                    <img src="{{ asset('img/arrow-no-fill.png') }}" alt="arrow no fill one" id="arrow-one-no-fill" width="25" height="25">
-                                    <img src="{{ asset('img/arrow-fill.png') }}" alt="arrow fill one" id="arrow-one-fill" width="25" height="25">
-                                
-                                
-                                    <img src="{{ asset('img/arrow-no-fill.png') }}" alt="arrow no fill two" id="arrow-two-no-fill" width="25" height="25">
-                                    <img src="{{ asset('img/arrow-fill.png') }}" alt="arrow fill two" id="arrow-two-fill" width="25" height="25">
-                                
-                                
-                                    <img src="{{ asset('img/arrow-no-fill.png') }}" alt="arrow no fill three" id="arrow-three-no-fill" width="25" height="25">
-                                    <img src="{{ asset('img/arrow-fill.png') }}" alt="arrow fill three" id="arrow-three-fill" width="25" height="25">
+                                <img src="{{ asset('img/arrow-no-fill.png') }}" alt="arrow no fill one" id="arrow-one-no-fill" width="25" height="25">
+                                <img src="{{ asset('img/arrow-fill.png') }}" alt="arrow fill one" id="arrow-one-fill" width="25" height="25">
+                            
+                                <img src="{{ asset('img/arrow-no-fill.png') }}" alt="arrow no fill two" id="arrow-two-no-fill" width="25" height="25">
+                                <img src="{{ asset('img/arrow-fill.png') }}" alt="arrow fill two" id="arrow-two-fill" width="25" height="25">
+                            
+                                <img src="{{ asset('img/arrow-no-fill.png') }}" alt="arrow no fill three" id="arrow-three-no-fill" width="25" height="25">
+                                <img src="{{ asset('img/arrow-fill.png') }}" alt="arrow fill three" id="arrow-three-fill" width="25" height="25">
                                 
                                 <span id="current-throw">0</span>
                             </div>
@@ -300,12 +293,6 @@
                                 <button type="button" class="btn btn-primary btn-point" id="rematch">
                                     <span class="fa fa-gamepad fa-1x"></span>
                                 </button>
-                                <!-- <button type="button" class="btn btn-danger btn-point button-undo" id="button-undo">Undo</button> -->
-                                <!-- <button type="button" class="btn btn-warning btn-point" id="button-log">Show Log</button> -->
-                                <!-- <button type="button" class="btn btn-primary btn-point" id="button-delete-active-player">Delete Active Player</button> -->
-                                <!-- <button type="button" class="btn btn-success btn-point" id="next-player">Next Player</button> -->
-                                <!-- <button type="button" class="btn btn-danger btn-point" id="stop-game">Stop Game</button> -->
-                                <!-- <button type="button" class="btn btn-danger btn-point" id="rematch">Rematch</button> -->
                             </div>
                         </div>
                         <svg id="svg" version="1.0" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1181.000000 1181.000000" preserveAspectRatio="xMidYMid meet"> 
@@ -764,12 +751,19 @@
                 </div>
             </div>
         </div>
-
+        <?php 
+            $players = \App\Player::all();
+            $optionsPlayers = [];
+            foreach ($players as $player) {
+                array_push($optionsPlayers, $player->nickname);
+            }
+        ?>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/js/bootstrap.min.js"></script>
         <script type="text/javascript">
+
             $( function() {
                 $( "#scoreboard" ).sortable({
                     cancel: null 
@@ -788,39 +782,18 @@
             var i;
             var selectList = document.getElementById( 'players' ) ;
 
-            //---Players
-            var optionsPlayers = 
-                [
-                    'Wannes'    ,
-                    'Wimbo'     ,
-                    'C'         ,
-                    'Ruby'      ,
-                    'Snels'     ,
-                    'Seba'      ,
-                    'Nele'      ,
-                    'Alex'      ,
-                    'Dre'       ,
-                    'Ben'       ,
-                    'KC'        ,
-                    'Robinho'   ,
-                    'Gil'       ,
-                    'BIG'       ,
-                    'Lotte'     ,
-                    'Daniel'    ,
-                    'Shari'     ,
-                    'Lucas'     ,
-                    'Emely'     ,
-                    'Nonnie'    ,
-                    'Fre'       ,
-                    'Bastie'    ,
-                    'Gilko'     ,
-                    'Paul'      ,
-                    'Vanessa'   ,
-                    'Carl'      ,
-                    'Peter'     ,
-                    'Kaat'
-                ]
-            ;
+            var optionsPlayers =    <?php 
+                                        echo '
+                                                ["' 
+                                                . 
+                                                    implode(
+                                                        '", "', $optionsPlayers
+                                                )
+                                                .
+                                                '"];'
+                                    ; ?>
+
+            //console.log(optionsPlayers);
 
             //---Sort alphabetically
             optionsPlayers.sort(function( a, b ){
@@ -828,7 +801,6 @@
                 if( a < b ) return -1 ;
                 if( a > b ) return 1 ;
                 return 0 ;
-
             })
 
             //---For loop to append every player to an option
@@ -842,7 +814,6 @@
                 option.value        = optionPlayer ;
 
                 selectList.appendChild( option ) ;
-
             }
 
             //---Add a player to the game

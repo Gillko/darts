@@ -30,7 +30,7 @@
                     <input id="hour" type="text" class="form-control" name="hour" value="{{ date('H:i:s') }}">
                 </div>
 
-                 <div class="form-group">
+                <div class="form-group">
                     <label for="players">{{ __('Players') }}</label>
                     <select name="player_list[]" id="players" class="form-control" multiple style="height:300px;">
                         @foreach($players as $player)
