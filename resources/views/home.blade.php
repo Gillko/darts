@@ -234,7 +234,7 @@
                 <div class="form-group">
                     <h2 id="amount-players">Players</h2>
                     <label for="players">Players</label>
-                    <select multiple="multiple" class="form-control" id="players" size="10"></select>
+                    <select multiple="multiple" class="form-control" id="players" size="14"></select>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
