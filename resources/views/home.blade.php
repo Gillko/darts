@@ -120,13 +120,20 @@
             background-color: #2d77b8;
             color: #fff;
         }
-        #arrow-one,
-        #arrow-two,
-        #arrow-three{
-           visibility: hidden;
+        #arrow-one-fill,
+        #arrow-two-fill,
+        #arrow-three-fill{
+            visibility: hidden;
+            margin-left: -29px;
         }
         #current-throw{
             font-size: 35px;
+            color: #2d77b8;
+            vertical-align: middle;
+            padding: 0 0 0 10px;
+        }
+        .disabled{
+            pointer-events: none;
         }
         /*override bootstrap*/
         select,
@@ -257,10 +264,19 @@
                     <div id="overall-points-board">
                         <div class="row">
                             <div class="col-md-4 text-left">
-                                <p><span id="current-throw">0</span></p>
-                                <img src="{{ asset('img/arrow.png') }}" alt="arrow one" id="arrow-one" width="25" height="25">
-                                <img src="{{ asset('img/arrow.png') }}" alt="arrow two" id="arrow-two" width="25" height="25">
-                                <img src="{{ asset('img/arrow.png') }}" alt="arrow three" id="arrow-three" width="25" height="25">
+                                
+                                    <img src="{{ asset('img/arrow-no-fill.png') }}" alt="arrow no fill one" id="arrow-one-no-fill" width="25" height="25">
+                                    <img src="{{ asset('img/arrow-fill.png') }}" alt="arrow fill one" id="arrow-one-fill" width="25" height="25">
+                                
+                                
+                                    <img src="{{ asset('img/arrow-no-fill.png') }}" alt="arrow no fill two" id="arrow-two-no-fill" width="25" height="25">
+                                    <img src="{{ asset('img/arrow-fill.png') }}" alt="arrow fill two" id="arrow-two-fill" width="25" height="25">
+                                
+                                
+                                    <img src="{{ asset('img/arrow-no-fill.png') }}" alt="arrow no fill three" id="arrow-three-no-fill" width="25" height="25">
+                                    <img src="{{ asset('img/arrow-fill.png') }}" alt="arrow fill three" id="arrow-three-fill" width="25" height="25">
+                                
+                                <span id="current-throw">0</span>
                             </div>
                             <div class="col-md-8 text-right">
                                 <button type="button" class="btn btn-primary btn-point button-undo" id="button-undo">
@@ -274,6 +290,9 @@
                                 </button>
                                 <button type="button" class="btn btn-primary btn-point" id="next-player">
                                     <span class="fa fa-arrow-down fa-1x"></span>
+                                </button>
+                                <button type="button" class="btn btn-primary btn-point" id="previous-player">
+                                    <span class="fa fa-arrow-up fa-1x"></span>
                                 </button>
                                 <button type="button" class="btn btn-primary btn-point" id="stop-game">
                                     <span class="fa fa-remove fa-1x"></span>
@@ -1087,9 +1106,9 @@
                                         firstArrowScore = localStorage.getItem('firstArrow');
                                         document.getElementById('current-throw').innerHTML = firstArrowScore;
 
-                                        document.getElementById('arrow-one').style.visibility = 'visible';
-                                        document.getElementById('arrow-two').style.visibility = 'hidden';
-                                        document.getElementById('arrow-three').style.visibility = 'hidden';
+                                        document.getElementById('arrow-one-fill').style.visibility = 'visible';
+                                        document.getElementById('arrow-two-fill').style.visibility = 'hidden';
+                                        document.getElementById('arrow-three-fill').style.visibility = 'hidden';
 
                                         var firstArrowToParagraph = document.createElement('p');
                                         firstArrowToParagraph.innerHTML = 'first arrow';
@@ -1102,8 +1121,8 @@
                                         var secondArrowScore = parseInt(localStorage.getItem('firstArrow')) + parseInt(localStorage.getItem('secondArrow'));
                                         document.getElementById('current-throw').innerHTML = secondArrowScore;
 
-                                        document.getElementById('arrow-two').style.visibility = 'visible';
-                                        document.getElementById('arrow-three').style.visibility = 'hidden';
+                                        document.getElementById('arrow-two-fill').style.visibility = 'visible';
+                                        document.getElementById('arrow-three-fill').style.visibility = 'hidden';
                                         
                                         var secondArrowToParagraph = document.createElement('p');
                                         secondArrowToParagraph.innerHTML = 'second arrow';
@@ -1111,12 +1130,12 @@
                                         document.getElementById('points-after-third-arrow').appendChild(secondArrowToParagraph);
                                     } else if(count == 2){
                                         thirdArrowStorage = minusScore;
-                                        localStorage.setItem('thirddArrow', thirdArrowStorage);
+                                        localStorage.setItem('thirdArrow', thirdArrowStorage);
 
-                                        var thirdArrowScore = parseInt(localStorage.getItem('firstArrow')) + parseInt(localStorage.getItem('secondArrow')) + parseInt(localStorage.getItem('thirddArrow'));
+                                        var thirdArrowScore = parseInt(localStorage.getItem('firstArrow')) + parseInt(localStorage.getItem('secondArrow')) + parseInt(localStorage.getItem('thirdArrow'));
                                         document.getElementById('current-throw').innerHTML = thirdArrowScore;
 
-                                        document.getElementById('arrow-three').style.visibility = 'visible';
+                                        document.getElementById('arrow-three-fill').style.visibility = 'visible';
                                         
                                         var thirdArrowToParagraph = document.createElement('p');
                                         thirdArrowToParagraph.innerHTML = thirdArrowScore;
@@ -2601,28 +2620,26 @@
 
                                             document.getElementById(scoreDouble1Name).classList.add("color-combination");
 
-                                        } /*else if(document.getElementById('score-value').value == 1 || document.getElementById('score-value').value < 0){
-
-                                            var buttonUndo = document.getElementById('button-undo');
-
-                                            if (count == 1) {
-                                                buttonUndo.click();
-                                            } else if(count == 2){
-                                                buttonUndo.click();
-                                                buttonUndo.click();
-                                            } else if(count == 3){
-                                                buttonUndo.click();
-                                                buttonUndo.click();
-                                                buttonUndo.click();
-                                            }
-
-                                        }*/ else if(document.getElementById('score-value').value == 0){
-
-                                            combinationToParagraph.innerHTML = 'WINNER';
-
                                         } else if(document.getElementById('score-value').value == 1 || document.getElementById('score-value').value < 0){
 
+                                            var score = document.getElementById('score-value').value;
                                             combinationToParagraph.innerHTML = 'BUST';
+                                            if (count == 0) {
+                                                var scoreBust = parseInt(score) + parseInt(localStorage.getItem('firstArrow'));
+                                                document.getElementById('score-value').innerHTML = scoreBust;
+                                                document.getElementById('score-value').value = scoreBust;
+                                            } else if(count == 1){
+                                                var scoreBust = parseInt(score) + parseInt(localStorage.getItem('firstArrow')) + parseInt(localStorage.getItem('secondArrow'));
+                                                document.getElementById('score-value').innerHTML = scoreBust;
+                                                document.getElementById('score-value').value = scoreBust;
+                                            } else if(count == 2){
+                                                var scoreBust = parseInt(score) + parseInt(localStorage.getItem('firstArrow')) + parseInt(localStorage.getItem('secondArrow')) + parseInt(localStorage.getItem('thirdArrow'));
+                                                document.getElementById('score-value').innerHTML = scoreBust;
+                                                document.getElementById('score-value').value = scoreBust;
+                                            }
+                                        } else if(document.getElementById('score-value').value == 0){
+
+                                            combinationToParagraph.innerHTML = 'WINNER';
 
                                         }
 
@@ -2669,6 +2686,16 @@
                             console.log('count : ' + count);
                         }
 
+                        document.getElementById( 'previous-player' ).onclick = function() {
+                            var previousPlayer = document.getElementById('scoreboard').lastChild;
+                            document.getElementById('player').parentNode.prepend(previousPlayer);
+                            count = 3;
+                            console.log('count : ' + count);
+                            if(count == 3){
+                                document.getElementsByTagName('svg')[0].setAttribute('class', 'disabled');
+                            }
+                        }
+
                         document.getElementById( 'rematch' ).onclick = function(){
 
                             count = 0;
@@ -2706,9 +2733,9 @@
                             scoreboard = document.getElementById('scoreboard').innerHTML;
                             localStorage.setItem('scoreboard', scoreboard);
 
-                            document.getElementById('arrow-one').style.visibility = 'hidden';
-                            document.getElementById('arrow-two').style.visibility = 'hidden';
-                            document.getElementById('arrow-three').style.visibility = 'hidden';
+                            document.getElementById('arrow-one-fill').style.visibility = 'hidden';
+                            document.getElementById('arrow-two-fill').style.visibility = 'hidden';
+                            document.getElementById('arrow-three-fill').style.visibility = 'hidden';
 
                             document.getElementById('current-throw').innerHTML = 0;
                         }
@@ -2723,14 +2750,26 @@
                                     count -= 1;
                                 }
 
-                                if (count == 0) {
-                                    var firstArrowUndo = parseInt(document.getElementById('current-throw').innerHTML) - parseInt(localStorage.getItem('firstArrow'));
-                                    document.getElementById('current-throw').innerHTML = firstArrowUndo;
-                                } else if(count == 1){
-                                    var secondArrowUndo = parseInt(document.getElementById('current-throw').innerHTML) - parseInt(localStorage.getItem('secondArrow'));
-                                    document.getElementById('current-throw').innerHTML = secondArrowUndo;
-                                } else if(count == 2){
+                                if (document.getElementById('current-throw').innerHTML !=  0){
+                                    if (count == 0) {
+                                        var firstArrowUndo = parseInt(document.getElementById('current-throw').innerHTML) - parseInt(localStorage.getItem('firstArrow'));
+                                        document.getElementById('current-throw').innerHTML = firstArrowUndo;
+                                        document.getElementById('arrow-one-fill').style.visibility = 'hidden';
 
+                                        document.getElementsByTagName('svg')[0].removeAttribute('class', 'disabled');
+                                    } else if(count == 1){
+                                        var secondArrowUndo = parseInt(document.getElementById('current-throw').innerHTML) - parseInt(localStorage.getItem('secondArrow'));
+                                        document.getElementById('current-throw').innerHTML = secondArrowUndo;
+                                        document.getElementById('arrow-two-fill').style.visibility = 'hidden';
+
+                                        document.getElementsByTagName('svg')[0].removeAttribute('class', 'disabled');
+                                    } else if(count == 2){
+                                        var thirdArrowUndo = parseInt(document.getElementById('current-throw').innerHTML) - parseInt(localStorage.getItem('thirdArrow'));
+                                        document.getElementById('current-throw').innerHTML = thirdArrowUndo;
+                                        document.getElementById('arrow-three-fill').style.visibility = 'hidden';
+
+                                        document.getElementsByTagName('svg')[0].removeAttribute('class', 'disabled');
+                                    }
                                 }
                                 
                                 console.log('count : ' + count);
