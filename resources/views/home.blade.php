@@ -293,6 +293,14 @@
                                 <button type="button" class="btn btn-primary btn-point" id="rematch">
                                     <span class="fa fa-gamepad fa-1x"></span>
                                 </button>
+                                <script>
+                                    var test = document.getElementById("game").value;
+
+                                    //window.location.href = "http://localhost:8888/darts/public/games?game=" + test ;
+                                </script>
+                                <button type="button" class="btn btn-primary btn-save-game" id="save-game">
+                                    <a href="games" onclick="location.href=this.href+'?game=' + test;return false;">Save game</a>
+                                </button>
                             </div>
                         </div>
                         <svg id="svg" version="1.0" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1181.000000 1181.000000" preserveAspectRatio="xMidYMid meet"> 
