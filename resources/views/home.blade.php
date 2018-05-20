@@ -293,13 +293,9 @@
                                 <button type="button" class="btn btn-primary btn-point" id="rematch">
                                     <span class="fa fa-gamepad fa-1x"></span>
                                 </button>
-                                <script>
-                                    var test = document.getElementById("game").value;
-
-                                    //window.location.href = "http://localhost:8888/darts/public/games?game=" + test ;
-                                </script>
+                                
                                 <button type="button" class="btn btn-primary btn-save-game" id="save-game">
-                                    <a href="games" onclick="location.href=this.href+'?game=' + test;return false;">Save game</a>
+                                    <a id="save-game-link">Save game</a>
                                 </button>
                             </div>
                         </div>
@@ -864,6 +860,10 @@
                 scoreboard = document.getElementById('scoreboard').innerHTML;
                 localStorage.setItem('scoreboard', scoreboard);
 
+                var gameURL = 'games?game=' + localStorage.getItem('gameType') + '&players=' + JSON.parse(localStorage.getItem('players'));
+
+                document.getElementById('save-game-link').setAttribute('href', gameURL);
+
                 return false;
             }
 
@@ -915,6 +915,8 @@
                     if (option.selected) {
                         playersArray.push(option.value);
 
+                        localStorage.setItem('players', JSON.stringify(playersArray));
+
                         //---Variables
                         var scoreboard = document.getElementById('scoreboard');
 
@@ -933,7 +935,7 @@
                                         + '<div class="board">' 
                                             + '<div class="row">' 
                                                 + '<div class="col-md-6 col-sm-6 col-6">' 
-                                                    + '<h2 id="player">' + option.value + '</h2>'
+                                                    + '<h2 class="player-name" id="player">' + option.value + '</h2>'
                                                 + '</div>'
                                                 + '<div class="col-md-6 col-sm-6 col-6" id="point-input">'
                                                     + '<input class="form-control form-control-points score-value" id="score-value" value="' + typeOfGame + '" disabled/>'
