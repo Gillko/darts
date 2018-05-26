@@ -11,7 +11,7 @@ class Game extends Model
 	*
 	* @var array
 	*/
-	protected $fillable = ['name', 'date', 'hour', 'winner'];
+	protected $fillable = ['name', 'date', 'hour', 'type', 'winner'];
 
 	protected $table ='games';
 

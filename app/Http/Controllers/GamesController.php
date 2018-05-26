@@ -20,6 +20,7 @@ class GamesController extends Controller
         'name'      => 'required',
         'date'      => 'required',
         'hour'      => 'required',
+        'type'      => 'required',
         'players'   => 'required',
         'winner'    => 'required'
     ];
@@ -46,7 +47,7 @@ class GamesController extends Controller
 
         $lastinsertid = Game::all()->last();
 
-        $players = Player::select('firstname', 'id')->get();
+        $players = Player::select('nickname', 'id')->get();
 
         return \View::make('games.index', compact('games', 'players', 'lastinsertid'));
 
@@ -96,6 +97,7 @@ class GamesController extends Controller
             $game->name     = $request->name;
             $game->date     = $request->date;
             $game->hour     = $request->hour;
+            $game->type     = $request->type;
             $game->winner = $request->winner;
             $game->save();
             $game->players()->attach($request->players);

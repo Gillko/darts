@@ -293,9 +293,9 @@
                                 <button type="button" class="btn btn-primary btn-point" id="rematch">
                                     <span class="fa fa-gamepad fa-1x"></span>
                                 </button>
-                                
+
                                 <button type="button" class="btn btn-primary btn-save-game" id="save-game">
-                                    <a id="save-game-link">Save game</a>
+                                    <a id="save-game-link"><span class="fa fa-trophy fa-1x"></span></a>
                                 </button>
                             </div>
                         </div>
@@ -782,6 +782,13 @@
                 location.reload();
             }
 
+            if (document.getElementById('score-value') == 0){
+                var winner; 
+
+                winner = document.getElementById('player-name').innerHTML;
+                localStorage.setItem('winner' , winner);
+            }
+
             //---Variables
             var i;
             var selectList = document.getElementById( 'players' ) ;
@@ -860,10 +867,6 @@
                 scoreboard = document.getElementById('scoreboard').innerHTML;
                 localStorage.setItem('scoreboard', scoreboard);
 
-                var gameURL = 'games?game=' + localStorage.getItem('gameType') + '&players=' + JSON.parse(localStorage.getItem('players'));
-
-                document.getElementById('save-game-link').setAttribute('href', gameURL);
-
                 return false;
             }
 
@@ -900,6 +903,10 @@
                 return false;
             }
 
+            //---multiple select same size as options
+            var playersSelect = document.getElementById( 'players' );
+            playersSelect.setAttribute( 'size', playersSelect.length );
+
             function getSelectValues( select ) {
 
                 //---Variables
@@ -935,7 +942,7 @@
                                         + '<div class="board">' 
                                             + '<div class="row">' 
                                                 + '<div class="col-md-6 col-sm-6 col-6">' 
-                                                    + '<h2 class="player-name" id="player">' + option.value + '</h2>'
+                                                    + '<h2 class="player-name" id="player-name">' + option.value + '</h2>'
                                                 + '</div>'
                                                 + '<div class="col-md-6 col-sm-6 col-6" id="point-input">'
                                                     + '<input class="form-control form-control-points score-value" id="score-value" value="' + typeOfGame + '" disabled/>'
@@ -2621,6 +2628,15 @@
                                         } else if(document.getElementById('score-value').value == 0){
 
                                             combinationToParagraph.innerHTML = 'WINNER';
+
+                                            var winner; 
+
+                                            winner = document.getElementById('player-name').innerHTML;
+                                            localStorage.setItem('winner' , winner);
+
+                                            var gameURL = 'games?game=' + localStorage.getItem('gameType') + '&players=' + JSON.parse(localStorage.getItem('players')) + '&winner=' + localStorage.getItem('winner');
+
+                                            document.getElementById('save-game-link').setAttribute('href', gameURL);
 
                                         }
 

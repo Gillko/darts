@@ -24,6 +24,7 @@
                             <th><i class="fa fa-gamepad fa-1x"></i></th>
                             <th><i class="fa fa-calendar fa-1x"></i></th>
                             <th><i class="fa fa-clock-o fa-1x"></i></th>
+                            <th><i class="fa fa-gamepad fa-1x"></i></th>
                             <th><i class="fa fa-users fa-1x"></i></th>
                             <th>
                                 <i class="fa fa-trophy fa-1x"></i>
@@ -38,6 +39,7 @@
                                 <td>{{ $game->name }}</td>
                                 <td>{{ $game->date }}</td>
                                 <td>{{ $game->hour }}</td>
+                                <td>{{ $game->type }}</td>
                                 <td>
                                     @foreach ($game->players as $player)
                                         <p><a href="{{ URL::to('/players/' . $player->id) }}">{{ $player->firstname }} {{ $player->lastname }}</a></p>
@@ -97,10 +99,16 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="type">{{ __('Type') }}</label>
+                        <input type="text" class="form-control" id="type_add"">
+                        <p class="errorType text-center alert alert-danger hidden"></p>
+                    </div>
+
+                    <div class="form-group">
                         <label for="players">{{ __('Players') }}</label>
                         <select name="player_list[]" id="players_add" class="form-control" multiple>
                             @foreach($players as $player)
-                                <option value="{{ $player->id }}">{{ $player->firstname }}</option>
+                                <option value="{{ $player->id }}" id="{{ $player->nickname }}-player">{{ $player->nickname }}</option>
                             @endforeach
                         </select>
                         <p class="errorPlayers text-center alert alert-danger hidden"></p>
@@ -110,7 +118,7 @@
                         <label for="players">{{ __('Winner') }}</label>
                         <select id="winner_add" class="form-control">
                             @foreach($players as $player)
-                                <option value="{{ $player->id }}">{{ $player->firstname }}</option>
+                                <option value="{{ $player->id }}" id="{{ $player->nickname }}-winner">{{ $player->nickname }}</option>
                             @endforeach
                         </select>
                         <p class="errorWinner text-center alert alert-danger hidden"></p>
@@ -205,6 +213,7 @@
                     'name': $('#name_add').val(),
                     'date': $('#date_add').val(),
                     'hour': $('#hour_add').val(),
+                    'type': $('#type_add').val(),
                     'players': $('#players_add').val(),
                     'winner': $('#winner_add').val()
                 },
@@ -212,6 +221,7 @@
                     $('.errorName').addClass('hidden');
                     $('.errorDate').addClass('hidden');
                     $('.errorHour').addClass('hidden');
+                    $('.errorType').addClass('hidden');
                     $('.errorPlayers').addClass('hidden');
                     $('.errorWinner').addClass('hidden');
 
@@ -232,6 +242,10 @@
                         if (data.errors.hour) {
                             $('.errorHour').removeClass('hidden');
                             $('.errorHour').text(data.errors.hour);
+                        }
+                        if (data.errors.type) {
+                            $('.errorType').removeClass('hidden');
+                            $('.errorType').text(data.errors.type);
                         }
                         if (data.errors.players) {
                             $('.errorPlayers').removeClass('hidden');
@@ -255,6 +269,8 @@
                                 + "<td>" + data.date + "</td>"
 
                                 + "<td>" + data.hour + "</td>"
+
+                                + "<td>" + data.type + "</td>"
 
                                 + "<td>" + data.players + "</td>" 
 
@@ -313,6 +329,57 @@
             });
         });
         /* DELETING A GAME */
+
+        /* POPULATING QUERY STRING VALUES INTO THE FORM */
+        window.getQueryParams = function getQueryParams(qs) {  
+            qs = qs.split('+').join(' ');
+            var params = {},
+            tokens,
+            re = /[?&]?([^=]+)=([^&]*)/g;
+            while (tokens = re.exec(qs)) {
+                params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
+            }  
+            return params;
+        }
+
+        if (getQueryParams(location.search).game) {
+            document.getElementById('type_add').value = getQueryParams(location.search).game;
+        }
+
+        if  (getQueryParams(location.search).players) {
+             //document.getElementById('players_add').value = getQueryParams(location.search).players;
+
+             //console.log( getQueryParams(location.search).players);
+
+
+             var playerParams = getQueryParams(location.search).players;
+
+             var values = playerParams.split(','),
+             result = [];
+
+             values.forEach(function(value) {
+                var decodedValue = decodeURIComponent(value);
+                result.push(decodedValue);
+                //console.log(value);
+
+                var playerSelect = document.getElementById(value + '-player');
+                playerSelect.setAttribute('selected', 'selected');
+            });
+
+             
+        }
+
+        if  (getQueryParams(location.search).winner) {
+            var queryparamWinner = getQueryParams(location.search).winner;
+            var winnerSelect = document.getElementById(queryparamWinner + '-winner');
+            winnerSelect.setAttribute('selected', 'selected');
+        }
+        /* POPULATING QUERY STRING VALUES INTO THE FORM */
+
+        /* MULTIPLE SELECT SAME SIZE AS OPTIONS */
+        var players = document.getElementById( 'players_add' );
+        players.setAttribute( 'size', players.length );
+        /* MULTIPLE SELECT SAME SIZE AS OPTIONS */
     </script>
     <!-- AJAX CRUD -->
 @endsection
