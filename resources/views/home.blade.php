@@ -91,6 +91,13 @@
         #button-resume-game{
             display: none;
         }
+        #information-buttons{
+            height: 50px;
+            text-transform: uppercase;
+            color: #495057;
+            font-size: 16px;
+            text-decoration: underline;
+        }
         .points-player{
             font-size: 8px;
         }
@@ -126,7 +133,6 @@
             font-size: 35px;
             color: #2d77b8;
             vertical-align: middle;
-            padding: 0 0 0 10px;
         }
         .disabled{
             pointer-events: none;
@@ -259,7 +265,7 @@
                 <div class="col-md-6">
                     <div id="overall-points-board">
                         <div class="row">
-                            <div class="col-md-4 text-left">
+                            <div class="col-md-3 text-left">
                                 <img src="{{ asset('img/arrow-no-fill.png') }}" alt="arrow no fill one" id="arrow-one-no-fill" width="25" height="25">
                                 <img src="{{ asset('img/arrow-fill.png') }}" alt="arrow fill one" id="arrow-one-fill" width="25" height="25">
                             
@@ -269,9 +275,9 @@
                                 <img src="{{ asset('img/arrow-no-fill.png') }}" alt="arrow no fill three" id="arrow-three-no-fill" width="25" height="25">
                                 <img src="{{ asset('img/arrow-fill.png') }}" alt="arrow fill three" id="arrow-three-fill" width="25" height="25">
                                 
-                                <span id="current-throw">0</span>
+                                <span id="current-throw">00</span>
                             </div>
-                            <div class="col-md-8 text-right">
+                            <div class="col-md-9 text-right">
                                 <button type="button" class="btn btn-primary btn-point button-undo" id="button-undo">
                                     <span class="fa fa-undo fa-1x"></span>
                                 </button>
@@ -293,10 +299,14 @@
                                 <button type="button" class="btn btn-primary btn-point" id="rematch">
                                     <span class="fa fa-gamepad fa-1x"></span>
                                 </button>
-
-                                <button type="button" class="btn btn-primary btn-save-game" id="save-game">
+                                <button type="button" class="btn btn-primary btn-point btn-save-game" id="save-game">
                                     <a id="save-game-link"><span class="fa fa-trophy fa-1x"></span></a>
                                 </button>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <h1 id="information-buttons"></h1>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <svg id="svg" version="1.0" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1181.000000 1181.000000" preserveAspectRatio="xMidYMid meet"> 
@@ -780,6 +790,70 @@
             stopGame.onclick = function(){
                 window.localStorage.clear();
                 location.reload();
+            }
+
+            document.getElementById('button-undo').onmouseover = function(){
+                document.getElementById('information-buttons').innerHTML = 'undo';
+            }
+
+            document.getElementById('button-undo').onmouseout = function(){
+                document.getElementById('information-buttons').innerHTML = '';
+            }
+
+            document.getElementById('button-log').onmouseover = function(){
+                document.getElementById('information-buttons').innerHTML = 'show log';
+            }
+
+            document.getElementById('button-log').onmouseout = function(){
+                document.getElementById('information-buttons').innerHTML = '';
+            }
+
+            document.getElementById('button-delete-active-player').onmouseover = function(){
+                document.getElementById('information-buttons').innerHTML = 'delete active player';
+            }
+
+            document.getElementById('button-delete-active-player').onmouseout = function(){
+                document.getElementById('information-buttons').innerHTML = '';
+            }
+
+            document.getElementById('next-player').onmouseover = function(){
+                document.getElementById('information-buttons').innerHTML = 'next player';
+            }
+
+            document.getElementById('next-player').onmouseout = function(){
+                document.getElementById('information-buttons').innerHTML = '';
+            }
+
+            document.getElementById('previous-player').onmouseover = function(){
+                document.getElementById('information-buttons').innerHTML = 'previous player';
+            }
+
+            document.getElementById('previous-player').onmouseout = function(){
+                document.getElementById('information-buttons').innerHTML = '';
+            }
+
+            document.getElementById('stop-game').onmouseover = function(){
+                document.getElementById('information-buttons').innerHTML = 'stop game';
+            }
+
+            document.getElementById('stop-game').onmouseout = function(){
+                document.getElementById('information-buttons').innerHTML = '';
+            }
+
+            document.getElementById('rematch').onmouseover = function(){
+                document.getElementById('information-buttons').innerHTML = 'rematch';
+            }
+
+            document.getElementById('rematch').onmouseout = function(){
+                document.getElementById('information-buttons').innerHTML = '';
+            }
+
+            document.getElementById('save-game').onmouseover = function(){
+                document.getElementById('information-buttons').innerHTML = 'save game';
+            }
+
+            document.getElementById('save-game').onmouseout = function(){
+                document.getElementById('information-buttons').innerHTML = '';
             }
 
             if (document.getElementById('score-value') == 0){
