@@ -981,11 +981,12 @@
             var playersSelect = document.getElementById( 'players' );
             playersSelect.setAttribute( 'size', playersSelect.length );
 
+            var playersArray = [ ];
+
             function getSelectValues( select ) {
 
                 //---Variables
                 var i;
-                var playersArray = [ ];
                 var options = select && select.options;
                 var option;
                 var typeOfGame = document.getElementById('game').value;
