@@ -10,7 +10,7 @@
         <div class="col-md-12">
             <h2 class="title-d">Games</h2>
             <a class="create-d" data-toggle="modal" data-target="#addModal" class="add-modal">
-              <button class="btn btn-primary">
+              <button class="btn btn-primary" id="btn-add-game">
                 <i class="fa fa-plus fa-1x" aria-hidden="true"></i>
               </button>
             </a>
@@ -343,6 +343,7 @@
         }
 
         if (getQueryParams(location.search).game) {
+            document.getElementById('btn-add-game').click();
             document.getElementById('type_add').value = getQueryParams(location.search).game;
         }
 

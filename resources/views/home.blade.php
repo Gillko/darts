@@ -88,8 +88,13 @@
         #button-start,
         #button-add-another-player,
         #data-toggle-show-log,
-        #button-resume-game{
+        #button-resume-game,
+        #data-toggle-save-game{
             display: none;
+        }
+        a,
+        a:hover{
+            color: #fff;
         }
         #information-buttons{
             height: 50px;
@@ -764,6 +769,25 @@
                     </div>
                 </div>
             </div>
+            <button id="data-toggle-save-game" type="button" data-toggle="modal" data-target="#modal-save-game"></button>
+            <div id="modal-save-game" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Congratulations</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <p><span id="winner-name-modal"></span> has won the game!</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary btn-point btn-save-game" id="save-game">
+                                <a id="save-game-link-two">Save Game</a>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <?php 
             $players = \App\Player::all();
@@ -854,13 +878,6 @@
 
             document.getElementById('save-game').onmouseout = function(){
                 document.getElementById('information-buttons').innerHTML = '';
-            }
-
-            if (document.getElementById('score-value') == 0){
-                var winner; 
-
-                winner = document.getElementById('player-name').innerHTML;
-                localStorage.setItem('winner' , winner);
             }
 
             //---Variables
@@ -2712,7 +2729,12 @@
                                             var gameURL = 'games?game=' + localStorage.getItem('gameType') + '&players=' + JSON.parse(localStorage.getItem('players')) + '&winner=' + localStorage.getItem('winner');
 
                                             document.getElementById('save-game-link').setAttribute('href', gameURL);
+                                            document.getElementById('save-game-link-two').setAttribute('href', gameURL);
 
+                                            var dataToggleSaveGame = document.getElementById('data-toggle-save-game');
+                                            dataToggleSaveGame.click();
+
+                                            document.getElementById('winner-name-modal').innerHTML = localStorage.getItem('winner');
                                         }
 
                                         document.getElementById('combination').appendChild(combinationToParagraph);
